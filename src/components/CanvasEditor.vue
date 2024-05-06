@@ -1,6 +1,7 @@
 <script setup>
 import Editor, {ControlType, EditorMode, ElementType, RowFlex, splitText} from "@hufe921/canvas-editor";
-import {nextTick, onMounted} from 'vue'
+import {onMounted} from 'vue'
+import {debounce, nextTick} from "@/utils/index.js";
 
 onMounted(() => {
   const isApple =
@@ -1441,28 +1442,28 @@ onMounted(() => {
     const activeMode = pageModeOptionsDom.querySelector(
         `[data-page-mode='${payload}']`
     )
-        pageModeOptionsDom
+    pageModeOptionsDom
             .querySelectorAll('li')
             .forEach(li => li.classList.remove('active'))
     activeMode.classList.add('active')
   }
 
-  // TODO 字数动态变化
-  // const handleContentChange = async function () {
-  //   // 字数
-  //   const wordCount = await editor.command.getWordCount()
-  //   document.querySelector('.word-count').innerText = `${
-  //       wordCount || 0
-  //   }`
-  //   // 目录
-  //   if (isCatalogShow) {
-  //     await nextTick(() => {
-  //       updateCatalog()
-  //     })
-  //   }
-  // }
-  // editor.listener.contentChange = debounce(handleContentChange, 200)
-  // handleContentChange()
+  //字数动态变化
+  const handleContentChange = async function () {
+    // 字数
+    const wordCount = await editor.command.getWordCount()
+    document.querySelector('.word-count').innerText = `${
+        wordCount || 0
+    }`
+    // 目录
+    if (isCatalogShow) {
+      await nextTick(() => {
+        updateCatalog()
+      })
+    }
+  }
+  editor.listener.contentChange = debounce(handleContentChange, 200)
+  handleContentChange()
 
   editor.listener.saved = function (payload) {
     console.log('elementList: ', payload)

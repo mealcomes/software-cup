@@ -525,7 +525,7 @@
 }
 
 .menu-item__underline li[data-decoration-style="solid"] {
-  background-image: url('./assets/images/line-single.svg');
+  background-image: url('../assets/images/line-single.svg');
 }
 
 .menu-item__underline li[data-decoration-style="double"] {
