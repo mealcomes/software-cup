@@ -20,8 +20,8 @@
   position: fixed;
   left: 10px;
   bottom: 80px;
-  top: 80px;
-  background: rgb(230, 235, 243);
+  top: 120px;
+  background: rgb(242,244,247);
   padding: 0 20px 40px 20px;
   border-radius: 5px;
 }

@@ -76,7 +76,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #f2f4f7;
+  background: white;
   z-index: 9;
   position: fixed;
   bottom: 0;
@@ -84,6 +84,7 @@
   font-size: 12px;
   padding: 0 4px 0 20px;
   box-sizing: border-box;
+  border-top: rgba(0, 0, 0, 0.08) solid 0.8px;
 }
 
 .footer>div:first-child {

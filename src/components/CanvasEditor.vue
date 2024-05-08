@@ -1,6 +1,7 @@
 <script setup>
-import Editor, {ControlType, EditorMode, ElementType, RowFlex, splitText} from "@hufe921/canvas-editor";
-import {nextTick, onMounted} from 'vue'
+import Editor, {Command, ControlType, EditorMode, ElementType, RowFlex, splitText} from "@hufe921/canvas-editor";
+import {nextTick, onMounted, onBeforeMount} from 'vue'
+import docxPlugin from "@hufe921/canvas-editor-plugin-docx";
 
 onMounted(() => {
   const isApple =
@@ -34,22 +35,9 @@ onMounted(() => {
       },
       {}
       )
-
+  editor.use(docxPlugin)
   const editorOption = editor.command.getOptions()
   console.log(editorOption)
-
-  // 菜单弹窗销毁
-  window.addEventListener(
-      'click',
-      evt => {
-        const visibleDom = document.querySelector('.visible')
-        if (!visibleDom || visibleDom.contains(evt.target)) return
-        visibleDom.classList.remove('visible')
-      },
-      {
-        capture: true
-      }
-  )
 
   // | 撤销 | 重做 | 格式刷 | 清除格式 |
   const undoDom = document.querySelector('.menu-item__undo')
@@ -419,45 +407,6 @@ onMounted(() => {
   }
 
   //TODO 超链接
-  const hyperlinkDom = document.querySelector( '.menu-item__hyperlink')
-  hyperlinkDom.onclick = function () {
-    console.log('hyperlink')
-    new Dialog({
-      title: '超链接',
-      data: [
-        {
-          type: 'text',
-          label: '文本',
-          name: 'name',
-          required: true,
-          placeholder: '请输入文本',
-          value: editor.command.getRangeText()
-        },
-        {
-          type: 'text',
-          label: '链接',
-          name: 'url',
-          required: true,
-          placeholder: '请输入链接'
-        }
-      ],
-      onConfirm: payload => {
-        const name = payload.find(p => p.name === 'name')?.value
-        if (!name) return
-        const url = payload.find(p => p.name === 'url')?.value
-        if (!url) return
-        editor.command.executeHyperlink({
-          type: ElementType.HYPERLINK,
-          value: '',
-          url,
-          valueList: splitText(name).map(n => ({
-            value: n,
-            size: 16
-          }))
-        })
-      }
-    })
-  }
 
   // 分割符
   const separatorDom = document.querySelector('.menu-item__separator')
@@ -1478,7 +1427,10 @@ onMounted(() => {
 <style scoped>
 .editor>div {
   margin: 80px auto;
+  z-index: 10;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
 }
+
 
 .ce-page-container canvas {
   box-shadow: rgb(158 161 165 / 40%) 0 2px 12px 0;
