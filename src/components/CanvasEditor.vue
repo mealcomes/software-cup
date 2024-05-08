@@ -9,22 +9,9 @@ onMounted(() => {
   const editor = new Editor(
       document.querySelector('.editor'),
       {
-        header: [
-          {
-            value: 'Header',
-            rowFlex: RowFlex.CENTER
-          }
-        ],
         main: [
           {
             value: ''
-          }
-        ],
-        footer: [
-          {
-            value: 'software-cup',
-            size: 12,
-            rowFlex: RowFlex.CENTER
           }
         ],
         IPageNumber: [

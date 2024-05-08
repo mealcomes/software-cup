@@ -16,7 +16,8 @@
     "ant-design-vue": "4.x",
     "element-plus": "^2.7.2",
     "v-dropdown": "^3.0.0",
-    "vue": "^3.4.21"
+    "vue": "^3.4.21",
+    "vue3-beautiful-chat": "^3.3.1"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.4",

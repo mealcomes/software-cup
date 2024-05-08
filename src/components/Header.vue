@@ -2,19 +2,25 @@
   <div class="header">
     <div style="display: flex; justify-content: center; align-items: center;">
       <el-icon><Back /></el-icon><h4>返回</h4>
-      <h2 style="margin-left: 50px;">实验报告</h2>
+      <el-divider direction="vertical" />
+      <h3 style="margin-left: 40px;">实验报告</h3>
     </div>
-    
+    <div style="display: flex; justify-content: center; align-items: center;">
+      <el-button type="primary" :icon="Share">
+        分享</el-button>
+      <el-divider direction="vertical" />
+      <el-avatar shape="square" :size="28" />
+    </div>
   </div>
 </template>
 
 <script setup>
-import {Back} from '@element-plus/icons-vue'
+import { Back, Share } from '@element-plus/icons-vue'
 </script>
 
 <style scoped>
 .header {
-  width: 100%;
+  width: 98.2%;
   background-color: white;
   height: 60px;
   position: fixed;
