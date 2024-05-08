@@ -69,7 +69,7 @@
   </div>
 </template>
 
-<style scoped>
+<style>
 .footer {
   width: 100%;
   height: 40px;

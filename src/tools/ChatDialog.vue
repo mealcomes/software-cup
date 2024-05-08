@@ -17,8 +17,9 @@
 </template>
 
 <script setup>
-import { Search, VideoPlay, VideoPause } from '@element-plus/icons-vue'
-import { ref } from 'vue'
+import {VideoPlay} from '@element-plus/icons-vue'
+import {ref} from 'vue'
+
 const chatInput = ref('')
 const activeName = ref('ai')
 const submitChat = () => {

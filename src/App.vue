@@ -3,10 +3,10 @@ import CanvasEditor from "@/components/CanvasEditor.vue";
 import Menu from "@/components/Menu.vue";
 import Catalog from "@/components/Catalog.vue";
 import Footer from "@/components/Footer.vue";
-import { ArrowDown } from "@element-plus/icons-vue";
+import {ArrowDown} from "@element-plus/icons-vue";
 import Header from "./components/Header.vue";
-import Dropdown from "v-dropdown";
 import ChatDialogVue from './tools/ChatDialog.vue';
+
 export default {
   components: {
     CanvasEditor: CanvasEditor,
@@ -39,7 +39,7 @@ export default {
   <Footer></Footer>
 </template>
 
-<style scoped>
+<style>
 .container {
   margin: 120px;
 }

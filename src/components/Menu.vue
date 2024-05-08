@@ -1,7 +1,7 @@
 <script setup>
-import { ArrowDown } from "@element-plus/icons-vue";
-import { ElMessage } from "element-plus";
+import {ElMessage} from "element-plus";
 import AItoolBox from '../tools/AItoolBox.vue'
+
 const handleCommand = (command) => {
   ElMessage(`click on item ${command}`)
 }

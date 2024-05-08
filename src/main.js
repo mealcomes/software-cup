@@ -1,8 +1,7 @@
-
-import { createApp } from 'vue'
+import {createApp} from 'vue'
 import App from './App.vue'
 import ElementPlus from 'element-plus'
-import VueDropdown, {Dropdown, Menu, Menuitem} from '@tomoeed/vue-dropdown';
+import VueDropdown from '@tomoeed/vue-dropdown';
 import 'element-plus/dist/index.css'
 import "./style.css"
 import '@/socket/index.js'

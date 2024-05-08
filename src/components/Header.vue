@@ -12,7 +12,7 @@
 import {Back} from '@element-plus/icons-vue'
 </script>
 
-<style scoped>
+<style>
 .header {
   width: 100%;
   background-color: white;
