@@ -13,15 +13,14 @@
   </div>
 </template>
 
-<style scoped>
-
+<style>
 .catalog {
   width: 220px;
   position: fixed;
   left: 10px;
   bottom: 80px;
   top: 120px;
-  background: rgb(242,244,247);
+  background: #F2F4F7;
   padding: 0 20px 40px 20px;
   border-radius: 5px;
 }
@@ -46,48 +45,48 @@
   cursor: pointer;
   display: inline-block;
   background: url(../assets/images/close.svg) no-repeat;
-  transition: all .2s;
+  transition: all 0.2s;
 }
 
 .catalog .catalog__header>div:hover {
   background: rgba(235, 238, 241);
 }
 
-/*.catalog__main {
+.catalog .catalog__main {
     height: calc(100% - 60px);
     padding: 10px 0;
     overflow-y: auto;
     overflow-x: hidden;
 }
 
-.catalog__main .catalog-item {
+.catalog .catalog__main .catalog-item {
     width: 100%;
     padding-left: 10px;
     box-sizing: border-box;
 }
 
-.catalog__main>.catalog-item {
+.catalog .catalog__main>.catalog-item {
     padding-left: 0;
 }
 
-.catalog__main .catalog-item .catalog-item__content {
+.catalog .catalog__main .catalog-item .catalog-item__content {
     width: 100%;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
 }
 
-.catalog__main .catalog-item .catalog-item__content:hover>span {
+.catalog .catalog__main .catalog-item .catalog-item__content:hover>span {
     color: #4991f2;
 }
 
-.catalog__main .catalog-item .catalog-item__content span {
+.catalog .catalog__main .catalog-item .catalog-item__content span {
     color: #3d4757;
     line-height: 30px;
     font-size: 12px;
     white-space: nowrap;
     cursor: pointer;
     user-select: none;
-}*/
+}
 
 </style>

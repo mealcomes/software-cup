@@ -1,7 +1,17 @@
 <script setup>
-import Editor, {Command, ControlType, EditorMode, ElementType, RowFlex, splitText} from "@hufe921/canvas-editor";
-import {nextTick, onMounted, onBeforeMount} from 'vue'
+import {debounce, nextTick} from "@/utils/index.js";
+import Editor, {
+  BlockType,
+  ControlType,
+  EditorMode,
+  ElementType,
+  ListStyle,
+  ListType,
+  RowFlex
+} from "@hufe921/canvas-editor";
+import {onMounted} from 'vue'
 import docxPlugin from "@hufe921/canvas-editor-plugin-docx";
+import Dialog from "@/pojo/dialog/Dialog.js";
 
 onMounted(() => {
   const isApple =
@@ -25,6 +35,19 @@ onMounted(() => {
   editor.use(docxPlugin)
   const editorOption = editor.command.getOptions()
   console.log(editorOption)
+
+  // 菜单弹窗销毁
+  window.addEventListener(
+      'click',
+      evt => {
+        const visibleDom = document.querySelector('.visible')
+        if (!visibleDom || visibleDom.contains(evt.target)) return
+        visibleDom.classList.remove('visible')
+      },
+      {
+        capture: true
+      }
+  )
 
   // | 撤销 | 重做 | 格式刷 | 清除格式 |
   const undoDom = document.querySelector('.menu-item__undo')
@@ -291,7 +314,7 @@ onMounted(() => {
     editor.command.executeList(listType, listStyle)
   }
 
-  // | 表格 | 图片 | 超链接 | 分割线 | 水印 | 代码块 | 分隔符 | 控件 | 复选框 | LaTeX | 日期选择器
+  // | 表格 | 图片 | 超链接 | 分割线 | 代码块 | 分隔符 | 控件 | 复选框 | LaTeX | 日期选择器
   const tableDom = document.querySelector('.menu-item__table')
   const tablePanelContainer = document.querySelector('.menu-item__table__collapse')
   const tableClose = document.querySelector('.table-close')
@@ -393,8 +416,6 @@ onMounted(() => {
     }
   }
 
-  //TODO 超链接
-
   // 分割符
   const separatorDom = document.querySelector('.menu-item__separator')
   const separatorOptionDom = separatorDom.querySelector('.options')
@@ -424,111 +445,6 @@ onMounted(() => {
     console.log('pageBreak')
     editor.command.executePageBreak()
   }
-
-  /*const watermarkDom = document.querySelector('.menu-item__watermark')
-  const watermarkOptionDom = watermarkDom.querySelector('.options')
-  watermarkDom.onclick = function () {
-    console.log('watermark')
-    watermarkOptionDom.classList.toggle('visible')
-  }
-  watermarkOptionDom.onmousedown = function (evt) {
-    const li = evt.target
-    const menu = li.dataset.menu
-        watermarkOptionDom.classList.toggle('visible')
-    if (menu === 'add') {
-      new Dialog({
-        title: '水印',
-        data: [
-          {
-            type: 'text',
-            label: '内容',
-            name: 'data',
-            required: true,
-            placeholder: '请输入内容'
-          },
-          {
-            type: 'color',
-            label: '颜色',
-            name: 'color',
-            required: true,
-            value: '#AEB5C0'
-          },
-          {
-            type: 'number',
-            label: '字体大小',
-            name: 'size',
-            required: true,
-            value: '120'
-          }
-        ],
-        onConfirm: payload => {
-          const nullableIndex = payload.findIndex(p => !p.value)
-          if (~nullableIndex) return
-          const watermark = payload.reduce((pre, cur) => {
-            pre[cur.name] = cur.value
-            return pre
-          }, <any>{})
-            instance.command.executeAddWatermark({
-              data: watermark.data,
-              color: watermark.color,
-              size: Number(watermark.size)
-            })
-            }
-            })
-            } else {
-              instance.command.executeDeleteWatermark()
-            }
-            }
-
-            const codeblockDom = document.querySelector(
-              '.menu-item__codeblock'
-              )!
-              codeblockDom.onclick = function () {
-                console.log('codeblock')
-                new Dialog({
-                title: '代码块',
-                data: [
-              {
-                type: 'textarea',
-                name: 'codeblock',
-                placeholder: '请输入代码',
-                width: 500,
-                height: 300
-              }
-                ],
-                onConfirm: payload => {
-                const codeblock = payload.find(p => p.name === 'codeblock')?.value
-                if (!codeblock) return
-                const tokenList = prism.tokenize(codeblock, prism.languages.javascript)
-                const formatTokenList = formatPrismToken(tokenList)
-                const elementList: IElement[] = []
-                for (let i = 0; i < formatTokenList.length; i++) {
-                const formatToken = formatTokenList[i]
-                const tokenStringList = splitText(formatToken.content)
-                for (let j = 0; j < tokenStringList.length; j++) {
-                const value = tokenStringList[j]
-                const element: IElement = {
-                value
-              }
-                if (formatToken.color) {
-                element.color = formatToken.color
-              }
-                if (formatToken.bold) {
-                element.bold = true
-              }
-                if (formatToken.italic) {
-                element.italic = true
-              }
-                elementList.push(element)
-              }
-              }
-                elementList.unshift({
-                value: '\n'
-              })
-                instance.command.executeInsertElementList(elementList)
-              }
-              })
-              }*/
 
   // 控件
   const controlDom = document.querySelector('.menu-item__control')
@@ -1377,28 +1293,28 @@ onMounted(() => {
     const activeMode = pageModeOptionsDom.querySelector(
         `[data-page-mode='${payload}']`
     )
-        pageModeOptionsDom
+    pageModeOptionsDom
             .querySelectorAll('li')
             .forEach(li => li.classList.remove('active'))
     activeMode.classList.add('active')
   }
 
-  // TODO 字数动态变化
-  // const handleContentChange = async function () {
-  //   // 字数
-  //   const wordCount = await editor.command.getWordCount()
-  //   document.querySelector('.word-count').innerText = `${
-  //       wordCount || 0
-  //   }`
-  //   // 目录
-  //   if (isCatalogShow) {
-  //     await nextTick(() => {
-  //       updateCatalog()
-  //     })
-  //   }
-  // }
-  // editor.listener.contentChange = debounce(handleContentChange, 200)
-  // handleContentChange()
+  //字数动态变化
+  const handleContentChange = async function () {
+    // 字数
+    const wordCount = await editor.command.getWordCount()
+    document.querySelector('.word-count').innerText = `${
+        wordCount || 0
+    }`
+    // 目录
+    if (isCatalogShow) {
+      await nextTick(() => {
+        updateCatalog()
+      })
+    }
+  }
+  editor.listener.contentChange = debounce(handleContentChange, 200)
+  handleContentChange()
 
   editor.listener.saved = function (payload) {
     console.log('elementList: ', payload)
@@ -1417,7 +1333,6 @@ onMounted(() => {
   z-index: 10;
   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
 }
-
 
 .ce-page-container canvas {
   box-shadow: rgb(158 161 165 / 40%) 0 2px 12px 0;

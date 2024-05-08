@@ -1,14 +1,13 @@
 <script setup>
-import { ArrowDown } from "@element-plus/icons-vue";
-import { ElMessage } from "element-plus";
+import {ElMessage} from "element-plus";
 import AItoolBox from '../tools/AItoolBox.vue'
+
 const handleCommand = (command) => {
   ElMessage(`click on item ${command}`)
 }
 </script>
 
 <template>
-  
   <div class="menu" editor-component="menu">
     <div class="menu-item">
       <div class="menu-item__undo">
@@ -548,7 +547,7 @@ const handleCommand = (command) => {
 }
 
 .menu-item__underline li[data-decoration-style="solid"] {
-  background-image: url("./assets/images/line-single.svg");
+  background-image: url("../assets/images/line-single.svg");
 }
 
 .menu-item__underline li[data-decoration-style="double"] {

@@ -1,6 +1,7 @@
 <script setup>
-import { ElMessage } from "element-plus";
-import { ArrowDown, MagicStick } from '@element-plus/icons-vue'
+import {ElMessage} from "element-plus";
+import {ArrowDown, MagicStick} from '@element-plus/icons-vue'
+
 const handleCommand = (command) => {
   ElMessage(`click on item ${command}`);
 }

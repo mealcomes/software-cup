@@ -18,7 +18,7 @@
 import { Back, Share } from '@element-plus/icons-vue'
 </script>
 
-<style scoped>
+<style>
 .header {
   width: 98.2%;
   background-color: white;
