@@ -189,4 +189,35 @@ const editMessage = (message) => {
   position: fixed;
   bottom: 60px !important;
 }
+
+.sc-chat-window {
+  top: 14.5% !important;
+  right: 0.5% !important;
+  width: 22.5% !important;
+  height: 67.5% !important;
+}
+
+.sc-header {
+  min-height: 10% !important;
+}
+
+.sc-message--text {
+  font-size: 14px;
+  font-weight: 400;
+  color: #303133;
+}
+
+.sc-message--text:hover {
+  color: #409eff;
+  cursor: pointer;
+}
+
+.sc-message--text:active {
+  color: #66b1ff;
+}
+
+.sc-message--text:visited {
+  color: #9093
+}
+
 </style>
