@@ -6,6 +6,7 @@ import Footer from "@/components/Footer.vue";
 import {ArrowDown} from "@element-plus/icons-vue";
 import Header from "./components/Header.vue";
 import ChatDialogVue from './tools/ChatDialog.vue';
+import Home from "./views/Home.vue";
 
 export default {
   components: {
@@ -15,7 +16,8 @@ export default {
     Footer: Footer,
     ArrowDown: ArrowDown,
     Header,
-    ChatDialogVue
+    ChatDialogVue,
+    Home
   },
   methods: {
     handleClick() {
@@ -28,7 +30,7 @@ export default {
 </script>
 
 <template>
-  <Header></Header>
+  <!-- <Header></Header>
   <Menu></Menu>
   <div class="container">
     <Catalog></Catalog>
@@ -36,7 +38,8 @@ export default {
     <chat-dialog-vue></chat-dialog-vue>
   </div>
 
-  <Footer></Footer>
+  <Footer></Footer> -->
+  <Home></Home>
 </template>
 
 <style>
