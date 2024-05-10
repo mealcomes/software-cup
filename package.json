@@ -14,9 +14,12 @@
     "@hufe921/canvas-editor-plugin-docx": "^0.0.5",
     "@tomoeed/vue-dropdown": "^1.0.0",
     "ant-design-vue": "4.x",
+    "axios": "^1.6.8",
     "element-plus": "^2.7.2",
+    "mammoth": "^1.7.2",
     "v-dropdown": "^3.0.0",
     "vue": "^3.4.21",
+    "vue-router": "4",
     "vue3-beautiful-chat": "^3.3.1"
   },
   "devDependencies": {

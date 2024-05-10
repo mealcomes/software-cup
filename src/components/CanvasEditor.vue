@@ -1,5 +1,5 @@
 <script setup>
-import {debounce, nextTick} from "@/utils/index.js";
+import { debounce, nextTick } from "@/utils/index.js";
 import Editor, {
   BlockType,
   ControlType,
@@ -9,44 +9,89 @@ import Editor, {
   ListType,
   RowFlex
 } from "@hufe921/canvas-editor";
-import {onMounted} from 'vue'
+import { onMounted, defineProps } from 'vue'
 import docxPlugin from "@hufe921/canvas-editor-plugin-docx";
 import Dialog from "@/pojo/dialog/Dialog.js";
+import { useRoute } from "vue-router";
+import { store } from "@/store";
+import axios from "axios";
+import { ElMessage } from "element-plus";
 
-onMounted(() => {
+const route = useRoute()
+const wordFile = store.fileToConvert
+console.log(route.query);
+
+// const props = defineProps({
+//   file: Object
+// })
+
+onMounted(async () => {
   const isApple =
-      typeof navigator !== 'undefined' && /Mac OS X/.test(navigator.userAgent)
+    typeof navigator !== 'undefined' && /Mac OS X/.test(navigator.userAgent)
   const editor = new Editor(
-      document.querySelector('.editor'),
-      {
-        main: [
-          {
-            value: ''
-          }
-        ],
-        IPageNumber: [
-          {
-            format: 'page-number'
-          }
-        ]
-      },
-      {}
-      )
-  editor.use(docxPlugin)
-  const editorOption = editor.command.getOptions()
-  console.log(editorOption)
+    document.querySelector('.editor'),
+    {
+      main: [
+        {
+          value: ''
+        }
+      ],
+      IPageNumber: [
+        {
+          format: 'page-number'
+        }
+      ]
+    },
+    {}
+  )
+  console.log(11);
+  editor.listener.contentChange = () => {
+    console.log(11);
+  }
+  editor.listener.contentChange = () => {
+    console.log(11);
+    console.log(editor.command.getValue());
+  }
+  editor.listener.saved = () => {
+    console.log(save);
+  }
+  if (store.editType === 'docxFile') {
+    editor.use(docxPlugin)
+    await editor.command.executeImportDocx({
+      arrayBuffer: wordFile
+    })
+    const fileContent = await editor.command.getValue()
+    const res = await axios.post('/api/files', {
+      name: store.fileToConvert.name,
+      content: fileContent.data,
+      author: 'Asuka',
+      file_size: store.fileToConvert.size,
+    })
+
+    if (res.status === 201) {
+      ElMessage.success('导入成功')
+      store.fileId = res.data.id
+      store.fileName = res.data.name
+    } else {
+      ElMessage.error('导入失败')
+    }
+  } else if (store.editType === 'reditFile') {
+    editor.command.executeSetValue(store.fileContent)
+  }
+  const data = await editor.command.getValue()
+  console.log(data);
 
   // 菜单弹窗销毁
   window.addEventListener(
-      'click',
-      evt => {
-        const visibleDom = document.querySelector('.visible')
-        if (!visibleDom || visibleDom.contains(evt.target)) return
-        visibleDom.classList.remove('visible')
-      },
-      {
-        capture: true
-      }
+    'click',
+    evt => {
+      const visibleDom = document.querySelector('.visible')
+      if (!visibleDom || visibleDom.contains(evt.target)) return
+      visibleDom.classList.remove('visible')
+    },
+    {
+      capture: true
+    }
   )
 
   // | 撤销 | 重做 | 格式刷 | 清除格式 |
@@ -93,10 +138,10 @@ onMounted(() => {
 
   // 清除样式
   document.querySelector('.menu-item__format').onclick =
-      function () {
-        console.log('format')
-        editor.command.executeFormat()
-      }
+    function () {
+      console.log('format')
+      editor.command.executeFormat()
+    }
 
   // | 字体 | 字体变大 | 字体变小 | 加粗 | 斜体 | 下划线 | 删除线 | 上标 | 下标 | 字体颜色 | 背景色 |
   const fontDom = document.querySelector('.menu-item__font')
@@ -166,39 +211,39 @@ onMounted(() => {
   underlineDom.title = `下划线(${isApple ? '⌘' : 'Ctrl'}+U)`
   const underlineOptionDom = underlineDom.querySelector('.options')
   underlineDom.querySelector('.select').onclick = function () {
-      underlineOptionDom.classList.toggle('visible')
-    }
+    underlineOptionDom.classList.toggle('visible')
+  }
   underlineDom.querySelector('i').onclick = function () {
-      console.log('underline')
-      editor.command.executeUnderline()
-      underlineOptionDom.classList.remove('visible')
-    }
+    console.log('underline')
+    editor.command.executeUnderline()
+    underlineOptionDom.classList.remove('visible')
+  }
   underlineDom.querySelector('ul').onmousedown = function (evt) {
-      const li = evt.target
-      const decorationStyle = li.dataset.decorationStyle
-      editor.command.executeUnderline({
-          style: decorationStyle
-      })
-      underlineOptionDom.querySelectorAll('li')
-          .forEach(child => {child.classList.remove('active')})
-      li.classList.add('active')
-      underlineOptionDom.classList.remove('visible')
-    }
+    const li = evt.target
+    const decorationStyle = li.dataset.decorationStyle
+    editor.command.executeUnderline({
+      style: decorationStyle
+    })
+    underlineOptionDom.querySelectorAll('li')
+      .forEach(child => { child.classList.remove('active') })
+    li.classList.add('active')
+    underlineOptionDom.classList.remove('visible')
+  }
 
   // 删除下划线
   const strikeoutDom = document.querySelector('.menu-item__strikeout')
   strikeoutDom.onclick = function () {
-      console.log('strikeout')
-      editor.command.executeStrikeout()
-    }
+    console.log('strikeout')
+    editor.command.executeStrikeout()
+  }
 
   // 上标
   const superscriptDom = document.querySelector('.menu-item__superscript')
   superscriptDom.title = `上标(${isApple ? '⌘' : 'Ctrl'}+Shift+,)`
   superscriptDom.onclick = function () {
-      console.log('superscript')
-      editor.command.executeSuperscript()
-    }
+    console.log('superscript')
+    editor.command.executeSuperscript()
+  }
 
   // 下标
   const subscriptDom = document.querySelector('.menu-item__subscript')
@@ -435,7 +480,7 @@ onMounted(() => {
     }
     editor.command.executeSeparator(payload)
     separatorOptionDom.querySelectorAll('li')
-        .forEach(child => {child.classList.remove('active')})
+      .forEach(child => { child.classList.remove('active') })
     li.classList.add('active')
   }
 
@@ -478,7 +523,7 @@ onMounted(() => {
           ],
           onConfirm: payload => {
             const placeholder = payload.find(
-                p => p.name === 'placeholder'
+              p => p.name === 'placeholder'
             )?.value
             if (!placeholder) return
             const value = payload.find(p => p.name === 'value')?.value || ''
@@ -489,11 +534,11 @@ onMounted(() => {
                 control: {
                   type,
                   value: value ? [
-                  {
-                    value
-                  }
+                    {
+                      value
+                    }
                   ]
-                      : null,
+                    : null,
                   placeholder
                 }
               }
@@ -522,14 +567,14 @@ onMounted(() => {
               type: 'textarea',
               label: '值集',
               name: 'valueSets',
-                    required: true,
+              required: true,
               height: 100,
               placeholder: `请输入值集JSON，例：\n[{\n"value":"有",\n"code":"98175"\n}]`
             }
           ],
           onConfirm: payload => {
             const placeholder = payload.find(
-                p => p.name === 'placeholder'
+              p => p.name === 'placeholder'
             )?.value
             if (!placeholder) return
             const valueSets = payload.find(p => p.name === 'valueSets')?.value
@@ -764,7 +809,8 @@ onMounted(() => {
           type: ElementType.BLOCK,
           value: '',
           height: Number(height),
-          block}
+          block
+        }
         if (width) {
           blockElement.width = Number(width)
         }
@@ -804,13 +850,13 @@ onMounted(() => {
     searchInputDom.focus()
   }
   searchCollapseDom.querySelector('span').onclick =
-      function () {
-        searchCollapseDom.style.display = 'none'
-        searchInputDom.value = ''
-        replaceInputDom.value = ''
-        editor.command.executeSearch(null)
-        setSearchResult()
-      }
+    function () {
+      searchCollapseDom.style.display = 'none'
+      searchInputDom.value = ''
+      replaceInputDom.value = ''
+      editor.command.executeSearch(null)
+      setSearchResult()
+    }
   searchInputDom.oninput = function () {
     editor.command.executeSearch(searchInputDom.value || null)
     setSearchResult()
@@ -822,23 +868,23 @@ onMounted(() => {
     }
   }
   searchCollapseDom.querySelector('button').onclick =
-      function () {
-        const searchValue = searchInputDom.value
-        const replaceValue = replaceInputDom.value
-        if (searchValue && replaceValue && searchValue !== replaceValue) {
-          editor.command.executeReplace(replaceValue)
-        }
+    function () {
+      const searchValue = searchInputDom.value
+      const replaceValue = replaceInputDom.value
+      if (searchValue && replaceValue && searchValue !== replaceValue) {
+        editor.command.executeReplace(replaceValue)
       }
+    }
   searchCollapseDom.querySelector('.arrow-left').onclick =
-      function () {
-        editor.command.executeSearchNavigatePre()
-        setSearchResult()
-      }
+    function () {
+      editor.command.executeSearchNavigatePre()
+      setSearchResult()
+    }
   searchCollapseDom.querySelector('.arrow-right').onclick =
-      function () {
-        editor.command.executeSearchNavigateNext()
-        setSearchResult()
-      }
+    function () {
+      editor.command.executeSearchNavigateNext()
+      setSearchResult()
+    }
 
   // 打印
   const printDom = document.querySelector('.menu-item__print')
@@ -880,12 +926,12 @@ onMounted(() => {
   async function updateCatalog() {
     const catalog = await editor.command.getCatalog()
     const catalogMainDom =
-        document.querySelector('.catalog__main')
-        catalogMainDom.innerHTML = ''
+      document.querySelector('.catalog__main')
+    catalogMainDom.innerHTML = ''
     if (catalog) {
       const appendCatalog = (
-          parent,
-          catalogItems
+        parent,
+        catalogItems
       ) => {
         for (let c = 0; c < catalogItems.length; c++) {
           const catalogItem = catalogItems[c]
@@ -937,27 +983,27 @@ onMounted(() => {
     const li = evt.target
     editor.command.executePageMode(li.dataset.pageMode)
     pageModeOptionsDom.querySelectorAll('li')
-        .forEach(child => child.classList.remove('active'))
+      .forEach(child => child.classList.remove('active'))
     li.classList.add('active')
   }
 
   // 纸张大小复原
   document.querySelector('.page-scale-percentage').onclick = function () {
-        console.log('page-scale-recovery')
-        editor.command.executePageScaleRecovery()
-      }
+    console.log('page-scale-recovery')
+    editor.command.executePageScaleRecovery()
+  }
   // 纸张缩小
   document.querySelector('.page-scale-minus').onclick =
-      function () {
-        console.log('page-scale-minus')
-        editor.command.executePageScaleMinus()
-      }
+    function () {
+      console.log('page-scale-minus')
+      editor.command.executePageScaleMinus()
+    }
   //纸张放大
   document.querySelector('.page-scale-add').onclick =
-      function () {
-        console.log('page-scale-add')
-        editor.command.executePageScaleAdd()
-      }
+    function () {
+      console.log('page-scale-add')
+      editor.command.executePageScaleAdd()
+    }
 
   // 纸张大小
   const paperSizeDom = document.querySelector('.paper-size')
@@ -972,7 +1018,7 @@ onMounted(() => {
     editor.command.executePaperSize(width, height)
     // 纸张状态回显
     paperSizeDomOptionsDom.querySelectorAll('li')
-        .forEach(child => child.classList.remove('active'))
+      .forEach(child => child.classList.remove('active'))
     li.classList.add('active')
   }
 
@@ -988,7 +1034,7 @@ onMounted(() => {
     editor.command.executePaperDirection(paperDirection)
     // 纸张方向状态回显
     paperDirectionDomOptionsDom.querySelectorAll('li')
-        .forEach(child => child.classList.remove('active'))
+      .forEach(child => child.classList.remove('active'))
     li.classList.add('active')
   }
 
@@ -1004,7 +1050,7 @@ onMounted(() => {
           label: '上边距',
           name: 'top',
           required: true,
-                        value: `${topMargin}`,
+          value: `${topMargin}`,
           placeholder: '请输入上边距'
         },
         {
@@ -1110,8 +1156,8 @@ onMounted(() => {
     document.querySelectorAll('.menu-item>div').forEach(dom => {
       const menu = dom.dataset.menu
       isReadonly && (!menu || !enableMenuList.includes(menu))
-          ? dom.classList.add('disable')
-          : dom.classList.remove('disable')
+        ? dom.classList.add('disable')
+        : dom.classList.remove('disable')
     })
   }
 
@@ -1119,17 +1165,17 @@ onMounted(() => {
   editor.listener.rangeStyleChange = function (payload) {
     // 控件类型
     payload.type === ElementType.SUBSCRIPT
-        ? subscriptDom.classList.add('active')
-        : subscriptDom.classList.remove('active')
+      ? subscriptDom.classList.add('active')
+      : subscriptDom.classList.remove('active')
     payload.type === ElementType.SUPERSCRIPT
-        ? superscriptDom.classList.add('active')
-        : superscriptDom.classList.remove('active')
+      ? superscriptDom.classList.add('active')
+      : superscriptDom.classList.remove('active')
     payload.type === ElementType.SEPARATOR
-        ? separatorDom.classList.add('active')
-        : separatorDom.classList.remove('active')
+      ? separatorDom.classList.add('active')
+      : separatorDom.classList.remove('active')
     separatorOptionDom
-        .querySelectorAll('li')
-        .forEach(li => li.classList.remove('active'))
+      .querySelectorAll('li')
+      .forEach(li => li.classList.remove('active'))
     if (payload.type === ElementType.SEPARATOR) {
       const separator = payload.dashArray.join(',') || '0,0'
       const curSeparatorDom = separatorOptionDom.querySelector(`[data-separator=${separator}]`)
@@ -1140,8 +1186,8 @@ onMounted(() => {
 
     // 富文本
     fontOptionDom
-        .querySelectorAll('li')
-        .forEach(li => li.classList.remove('active'))
+      .querySelectorAll('li')
+      .forEach(li => li.classList.remove('active'))
     const curFontDom = fontOptionDom.querySelector(`[data-family='${payload.font}']`)
     if (curFontDom) {
       fontSelectDom.innerText = curFontDom.innerText
@@ -1149,10 +1195,10 @@ onMounted(() => {
       curFontDom.classList.add('active')
     }
     sizeOptionDom
-        .querySelectorAll('li')
-        .forEach(li => li.classList.remove('active'))
+      .querySelectorAll('li')
+      .forEach(li => li.classList.remove('active'))
     const curSizeDom = sizeOptionDom.querySelector(
-        `[data-size='${payload.size}']`
+      `[data-size='${payload.size}']`
     )
     if (curSizeDom) {
       sizeSelectDom.innerText = curSizeDom.innerText
@@ -1161,17 +1207,17 @@ onMounted(() => {
       sizeSelectDom.innerText = `${payload.size}`
     }
     payload.bold
-        ? boldDom.classList.add('active')
-        : boldDom.classList.remove('active')
+      ? boldDom.classList.add('active')
+      : boldDom.classList.remove('active')
     payload.italic
-        ? italicDom.classList.add('active')
-        : italicDom.classList.remove('active')
+      ? italicDom.classList.add('active')
+      : italicDom.classList.remove('active')
     payload.underline
-        ? underlineDom.classList.add('active')
-        : underlineDom.classList.remove('active')
+      ? underlineDom.classList.add('active')
+      : underlineDom.classList.remove('active')
     payload.strikeout
-        ? strikeoutDom.classList.add('active')
-        : strikeoutDom.classList.remove('active')
+      ? strikeoutDom.classList.add('active')
+      : strikeoutDom.classList.remove('active')
     if (payload.color) {
       colorDom.classList.add('active')
       colorControlDom.value = payload.color
@@ -1208,26 +1254,26 @@ onMounted(() => {
 
     // 行间距
     rowOptionDom
-        .querySelectorAll('li')
-        .forEach(li => li.classList.remove('active'))
+      .querySelectorAll('li')
+      .forEach(li => li.classList.remove('active'))
     const curRowMarginDom = rowOptionDom.querySelector(`[data-rowmargin='${payload.rowMargin}']`)
     curRowMarginDom.classList.add('active')
 
     // 功能
     payload.undo
-        ? undoDom.classList.remove('no-allow')
-        : undoDom.classList.add('no-allow')
+      ? undoDom.classList.remove('no-allow')
+      : undoDom.classList.add('no-allow')
     payload.redo
-        ? redoDom.classList.remove('no-allow')
-        : redoDom.classList.add('no-allow')
+      ? redoDom.classList.remove('no-allow')
+      : redoDom.classList.add('no-allow')
     payload.painter
-        ? painterDom.classList.add('active')
-        : painterDom.classList.remove('active')
+      ? painterDom.classList.add('active')
+      : painterDom.classList.remove('active')
 
     // 标题
     titleOptionDom
-        .querySelectorAll('li')
-        .forEach(li => li.classList.remove('active'))
+      .querySelectorAll('li')
+      .forEach(li => li.classList.remove('active'))
     if (payload.level) {
       const curTitleDom = titleOptionDom.querySelector(`[data-level='${payload.level}']`)
       titleSelectDom.innerText = curTitleDom.innerText
@@ -1239,13 +1285,13 @@ onMounted(() => {
 
     // 列表
     listOptionDom
-        .querySelectorAll('li')
-        .forEach(li => li.classList.remove('active'))
+      .querySelectorAll('li')
+      .forEach(li => li.classList.remove('active'))
     if (payload.listType) {
       listDom.classList.add('active')
       const listType = payload.listType
       const listStyle =
-          payload.listType === ListType.OL ? ListStyle.DECIMAL : payload.listType
+        payload.listType === ListType.OL ? ListStyle.DECIMAL : payload.listType
       const curListDom = listOptionDom.querySelector(`[data-list-type='${listType}'][data-list-style='${listStyle}']`)
       if (curListDom) {
         curListDom.classList.add('active')
@@ -1281,21 +1327,21 @@ onMounted(() => {
     // 菜单操作权限
     disableMenusInControlContext.forEach(menu => {
       const menuDom = document.querySelector(
-          `.menu-item__${menu}`
+        `.menu-item__${menu}`
       )
       payload
-          ? menuDom.classList.add('disable')
-          : menuDom.classList.remove('disable')
+        ? menuDom.classList.add('disable')
+        : menuDom.classList.remove('disable')
     })
   }
 
   editor.listener.pageModeChange = function (payload) {
     const activeMode = pageModeOptionsDom.querySelector(
-        `[data-page-mode='${payload}']`
+      `[data-page-mode='${payload}']`
     )
     pageModeOptionsDom
-            .querySelectorAll('li')
-            .forEach(li => li.classList.remove('active'))
+      .querySelectorAll('li')
+      .forEach(li => li.classList.remove('active'))
     activeMode.classList.add('active')
   }
 
@@ -1303,9 +1349,8 @@ onMounted(() => {
   const handleContentChange = async function () {
     // 字数
     const wordCount = await editor.command.getWordCount()
-    document.querySelector('.word-count').innerText = `${
-        wordCount || 0
-    }`
+    document.querySelector('.word-count').innerText = `${wordCount || 0
+      }`
     // 目录
     if (isCatalogShow) {
       await nextTick(() => {
@@ -1316,8 +1361,16 @@ onMounted(() => {
   editor.listener.contentChange = debounce(handleContentChange, 200)
   handleContentChange()
 
-  editor.listener.saved = function (payload) {
+  editor.listener.saved = async function (payload) {
     console.log('elementList: ', payload)
+    const res = await axios.put(`/api/files/${store.fileId}`, {
+      content: payload.data
+    })
+    if (res.status === 200) {
+      ElMessage.success('保存成功')
+    } else {
+      ElMessage.error('保存失败')
+    }
   }
 })
 

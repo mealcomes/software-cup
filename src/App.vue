@@ -1,4 +1,4 @@
-<script>
+<script setup>
 import CanvasEditor from "@/components/CanvasEditor.vue";
 import Menu from "@/components/Menu.vue";
 import Catalog from "@/components/Catalog.vue";
@@ -7,39 +7,31 @@ import {ArrowDown} from "@element-plus/icons-vue";
 import Header from "./components/Header.vue";
 import ChatDialogVue from './tools/ChatDialog.vue';
 import Home from "./views/Home.vue";
+import Editor from "@/views/Editor.vue";
 
-export default {
-  components: {
-    CanvasEditor: CanvasEditor,
-    Menu: Menu,
-    Catalog: Catalog,
-    Footer: Footer,
-    ArrowDown: ArrowDown,
-    Header,
-    ChatDialogVue,
-    Home
-  },
-  methods: {
-    handleClick() {
-      console.log(1);
-      const dropDownDom = document.querySelector(".el-dropdown__popper");
-      dropDownDom.style.display = "fixed";
-    },
-  },
-};
+// export default {
+//   components: {
+//     CanvasEditor: CanvasEditor,
+//     Menu: Menu,
+//     Catalog: Catalog,
+//     Footer: Footer,
+//     ArrowDown: ArrowDown,
+//     Header,
+//     ChatDialogVue,
+//     Home
+//   },
+//   methods: {
+//     handleClick() {
+//       console.log(1);
+//       const dropDownDom = document.querySelector(".el-dropdown__popper");
+//       dropDownDom.style.display = "fixed";
+//     },
+//   },
+// };
 </script>
 
 <template>
-  <!-- <Header></Header>
-  <Menu></Menu>
-  <div class="container">
-    <Catalog></Catalog>
-    <CanvasEditor></CanvasEditor>
-    <chat-dialog-vue></chat-dialog-vue>
-  </div>
-
-  <Footer></Footer> -->
-  <Home></Home>
+  <RouterView></RouterView>
 </template>
 
 <style>

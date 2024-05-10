@@ -2,7 +2,7 @@
   <el-aside width="250px" style="background-color: rgb(249,250,251); " class="side">
     <div style="width: auto; height: 150px; flex-direction: column; display: flex; align-items: center; border-right: 0.8px solid rgb(220, 223, 230);">
       <h3 style="color: black; margin-bottom: 20px;">XX文档</h3>
-      <el-input style="width: 90%;" size="medium" placeholder="请输入内容">
+      <el-input style="width: 90%;" placeholder="请输入内容">
         <template #prefix>
         <el-icon class="el-input__icon"><search /></el-icon>
       </template>
@@ -22,14 +22,6 @@
         <el-icon><House /></el-icon>
         <span>回收站</span>
       </el-menu-item>
-      <el-sub-menu>
-        <template #title>
-        </template>
-        <el-menu-item-group>
-          <el-menu-item>
-          </el-menu-item>
-        </el-menu-item-group>
-      </el-sub-menu>
     </el-menu>
   </el-aside>
 </template>

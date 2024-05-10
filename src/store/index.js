@@ -2,5 +2,9 @@ import { reactive } from 'vue'
 import Editor from '@hufe921/canvas-editor'
 
 export const store = reactive({
-    editor: new Editor(),
+    fileToConvert: null,
+    editType: '',
+    fileId: 0,
+    fileName: '',
+    fileContent: null,
 })

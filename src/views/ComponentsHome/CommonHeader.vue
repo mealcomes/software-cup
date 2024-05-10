@@ -4,31 +4,23 @@
     <div class='l-content' plain>
       <!-- 图标的展示 -->
       <!-- <el-image src="https://paper-store-1311634119.cos.ap-nanjing.myqcloud.com/test1-jpg?q-sign-algorithm=sha1&q-ak=AKID8w1lJKV4DFrxG1lbaPduknMS0RY8bkGukbt8cZoEhZIAHFm1Okjxl59qIkrzBLhg&q-sign-time=1715260160;1715263760&q-key-time=1715260160;1715263760&q-header-list=host&q-url-param-list=&q-signature=af684c13bb42e537e5efcd5e782c1e5cd31c1850&x-cos-security-token=CPFToFG8TzwYoFQJRUVXmOYXtRJ6Disaf0ba42c774af8c94408cab64140c00a0N78_Z1hWHZybRNZUa68HDsPT70om0oll9i0lV3N5exV0p3A0Qrp67I5uG3X00Dcx4Q4PHpoy2Kg2Yv6Hbvu72lFd6rj3YB1jG0SMPlhLlGdbE9n20nz8H913CDCFnZ_9G0Sb2IAyZFt9T_YHbbT37N0kA1u_Bwh7GxFXPYGOTwTi5IrACQdpOhigKC2DDxvn"></el-image> -->
-      <el-dropdown trigger="click" :on-change="onFileUploaded">
+      <el-dropdown trigger="click" :on-change="onFileUploaded" @command="newCommand">
         <el-button :icon="Plus" type="primary" size="">
           新建
         </el-button>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item>文档</el-dropdown-item>
-            <el-dropdown-item>表格</el-dropdown-item>
-            <el-dropdown-item>幻灯片</el-dropdown-item>
-            <el-dropdown-item>Markdown</el-dropdown-item>
+            <el-dropdown-item command="doc">文档</el-dropdown-item>
+            <el-dropdown-item command="table">表格</el-dropdown-item>
+            <el-dropdown-item command="ppt">幻灯片</el-dropdown-item>
+            <el-dropdown-item command="md">Markdown</el-dropdown-item>
           </el-dropdown-menu>
         </template>
 
       </el-dropdown>
 
-      <el-upload
-        action="/api/upload"
-        :show-file-list="false"
-        :on-success="handleSuccess"
-        :before-upload="beforeUpload"
-        :headers="headers"
-        :limit="1"
-        v-model:file-list="uploadFileList"
-        accept=".xls,.xlsx,.doc,.docx,.ppt,.pptx,.md"
-      >
+      <el-upload :show-file-list="false" :on-success="handleSuccess" :before-upload="beforeUpload"
+        :headers="headers" :limit="1" v-model:file-list="uploadFileList" accept=".xls,.xlsx,.doc,.docx,.ppt,.pptx,.md">
         <el-button :icon="Plus" type="success">
           导入
         </el-button>
@@ -78,6 +70,45 @@
 import { Present, Plus, Money } from '@element-plus/icons-vue'
 import { ref } from 'vue'
 import FileName from '../../utils/FileName.vue'
+import { useRouter } from "vue-router";
+import { store } from '@/store';
+import mammoth from 'mammoth';
+import axios from 'axios';
+import { ElMessage } from 'element-plus';
+
+const newCommand = async (command) => {
+  if (command === 'doc') {
+    const res = await axios.post('/api/files', {
+      name: '未命名文件.docx',
+      content: {
+        header: [],
+        main: [{value: ''}],
+        footer: []
+      },
+      author: 'Asuka',
+      file_size: 0
+    })
+    console.log(res);
+    if (res.status === 201) {
+      ElMessage({
+        message: '新建成功',
+        type: 'success',
+      })
+      store.fileId = res.data.id
+      store.fileName = res.data.name
+      store.editType = 'newFile'
+      router.push('/editor')
+    } else {
+      ElMessage({
+        message: '新建失败',
+        type: 'error',
+      })
+    }
+    
+  }
+}
+
+const router = useRouter();
 
 const templateVisible = ref(false)
 const uploadFileList = ref([])
@@ -86,11 +117,28 @@ const headers = ref({
 })
 
 const handleSuccess = (response, file, fileList) => {
-  console.log(response, file, fileList)
+  // console.log(response, file, fileList)
+  // store.fileToConvert = file
+  // router.push({
+  //   name: 'Editor',
+  // })
+}
+
+const convert = async (file) => {
+  const result = await mammoth.convertToHtml({
+    arrayBuffer: file
+  })
+  console.log(result.value);
 }
 
 const beforeUpload = (file) => {
   console.log(file)
+  convert(file)
+  store.fileToConvert = file
+  store.editType = 'docxFile'
+  router.push({
+    name: 'Editor',
+  })
   return true
 }
 
