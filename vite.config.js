@@ -23,13 +23,20 @@ export default defineConfig({
     }
   },
   server: {
+    host: '0.0.0.0', // 监听所有IP，允许局域网访问
     open: true,
     proxy: {
+      '/api4ai': {
+        target: 'http://localhost:86',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api4ai/, '')
+      },
       '/api': {
         target: 'http://localhost:3000',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '')
-      }
+      },
+      
     }
   }
 })

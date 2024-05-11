@@ -154,4 +154,7 @@ const tableData = ref([])
   cursor: pointer;
   color: #409eff;
 }
+#app, body {
+  background-color: rgb(242,244,247);
+}
 </style>
