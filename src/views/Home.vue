@@ -59,8 +59,8 @@
 </template>
 
 <script setup>
-import CommonHeader from "./ComponentsHome/CommonHeader.vue";
-import CommonAside from "./ComponentsHome/CommonAside.vue";
+import CommonHeader from "../components/home/CommonHeader.vue";
+import CommonAside from "../components/home/CommonAside.vue";
 import '../assets/font_icon/iconfont.js'
 import { onMounted, ref, watch } from 'vue'
 import axios from "axios";

@@ -1,6 +1,6 @@
 <script setup>
 import {ElMessage} from "element-plus";
-import AItoolBox from '../tools/AItoolBox.vue'
+import AItoolBox from '../../tools/AItoolBox.vue'
 
 const handleCommand = (command) => {
   ElMessage(`click on item ${command}`)
@@ -488,35 +488,35 @@ const handleCommand = (command) => {
 }
 
 .menu-item__undo i {
-  background-image: url("../assets/images/undo.svg");
+  background-image: url("../../assets/images/undo.svg");
 }
 
 .menu-item__redo i {
-  background-image: url("../assets/images/redo.svg");
+  background-image: url("../../assets/images/redo.svg");
 }
 
 .menu-item__painter i {
-  background-image: url("../assets/images/painter.svg");
+  background-image: url("../../assets/images/painter.svg");
 }
 
 .menu-item__format i {
-  background-image: url("../assets/images/format.svg");
+  background-image: url("../../assets/images/format.svg");
 }
 
 .menu-item__size-add i {
-  background-image: url("../assets/images/size-add.svg");
+  background-image: url("../../assets/images/size-add.svg");
 }
 
 .menu-item__size-minus i {
-  background-image: url("../assets/images/size-minus.svg");
+  background-image: url("../../assets/images/size-minus.svg");
 }
 
 .menu-item__bold i {
-  background-image: url("../assets/images/bold.svg");
+  background-image: url("../../assets/images/bold.svg");
 }
 
 .menu-item__italic i {
-  background-image: url("../assets/images/italic.svg");
+  background-image: url("../../assets/images/italic.svg");
 }
 
 .menu-item .menu-item__underline {
@@ -526,7 +526,7 @@ const handleCommand = (command) => {
 
 .menu-item__underline > i {
   flex-shrink: 0;
-  background-image: url("../assets/images/underline.svg");
+  background-image: url("../../assets/images/underline.svg");
 }
 
 .menu-item__underline .select {
@@ -547,35 +547,35 @@ const handleCommand = (command) => {
 }
 
 .menu-item__underline li[data-decoration-style="solid"] {
-  background-image: url("../assets/images/line-single.svg");
+  background-image: url("../../assets/images/line-single.svg");
 }
 
 .menu-item__underline li[data-decoration-style="double"] {
-  background-image: url("../assets/images/line-double.svg");
+  background-image: url("../../assets/images/line-double.svg");
 }
 
 .menu-item__underline li[data-decoration-style="dashed"] {
-  background-image: url("../assets/images/line-dash-small-gap.svg");
+  background-image: url("../../assets/images/line-dash-small-gap.svg");
 }
 
 .menu-item__underline li[data-decoration-style="dotted"] {
-  background-image: url("../assets/images/line-dot.svg");
+  background-image: url("../../assets/images/line-dot.svg");
 }
 
 .menu-item__underline li[data-decoration-style="wavy"] {
-  background-image: url("../assets/images/line-wavy.svg");
+  background-image: url("../../assets/images/line-wavy.svg");
 }
 
 .menu-item__strikeout i {
-  background-image: url("../assets/images/strikeout.svg");
+  background-image: url("../../assets/images/strikeout.svg");
 }
 
 .menu-item__superscript i {
-  background-image: url("../assets/images/superscript.svg");
+  background-image: url("../../assets/images/superscript.svg");
 }
 
 .menu-item__subscript i {
-  background-image: url("../assets/images/subscript.svg");
+  background-image: url("../../assets/images/subscript.svg");
 }
 
 .menu-item__color,
@@ -594,7 +594,7 @@ const handleCommand = (command) => {
 }
 
 .menu-item__color i {
-  background-image: url("../assets/images/color.svg");
+  background-image: url("../../assets/images/color.svg");
 }
 
 .menu-item__color span {
@@ -602,7 +602,7 @@ const handleCommand = (command) => {
 }
 
 .menu-item__highlight i {
-  background-image: url("../assets/images/highlight.svg");
+  background-image: url("../../assets/images/highlight.svg");
 }
 
 .menu-item__highlight span {
@@ -621,7 +621,7 @@ const handleCommand = (command) => {
 
 .menu-item__title i {
   transform: translateX(-5px);
-  background-image: url("../assets/images/title.svg");
+  background-image: url("../../assets/images/title.svg");
 }
 
 .menu-item__title .options {
@@ -629,19 +629,19 @@ const handleCommand = (command) => {
 }
 
 .menu-item__left i {
-  background-image: url("../assets/images/left.svg");
+  background-image: url("../../assets/images/left.svg");
 }
 
 .menu-item__center i {
-  background-image: url("../assets/images/center.svg");
+  background-image: url("../../assets/images/center.svg");
 }
 
 .menu-item__right i {
-  background-image: url("../assets/images/right.svg");
+  background-image: url("../../assets/images/right.svg");
 }
 
 .menu-item__alignment i {
-  background-image: url("../assets/images/alignment.svg");
+  background-image: url("../../assets/images/alignment.svg");
 }
 
 .menu-item__row-margin {
@@ -649,7 +649,7 @@ const handleCommand = (command) => {
 }
 
 .menu-item__row-margin i {
-  background-image: url("../assets/images/row-margin.svg");
+  background-image: url("../../assets/images/row-margin.svg");
 }
 
 .menu-item__list {
@@ -657,7 +657,7 @@ const handleCommand = (command) => {
 }
 
 .menu-item__list i {
-  background-image: url("../assets/images/list.svg");
+  background-image: url("../../assets/images/list.svg");
 }
 
 .menu-item__list .options {
@@ -677,7 +677,7 @@ const handleCommand = (command) => {
 }
 
 .menu-item__image i {
-  background-image: url("../assets/images/image.svg");
+  background-image: url("../../assets/images/image.svg");
 }
 
 .menu-item__image input {
@@ -689,7 +689,7 @@ const handleCommand = (command) => {
 }
 
 .menu-item__table i {
-  background-image: url("../assets/images/table.svg");
+  background-image: url("../../assets/images/table.svg");
 }
 
 .menu-item .menu-item__table__collapse {
@@ -770,7 +770,7 @@ const handleCommand = (command) => {
 }
 
 .menu-item__hyperlink i {
-  background-image: url("../assets/images/hyperlink.svg");
+  background-image: url("../../assets/images/hyperlink.svg");
 }
 
 .menu-item__separator {
@@ -778,7 +778,7 @@ const handleCommand = (command) => {
 }
 
 .menu-item__separator > i {
-  background-image: url("../assets/images/separator.svg");
+  background-image: url("../../assets/images/separator.svg");
 }
 
 .menu-item .menu-item__separator .options {
@@ -794,31 +794,31 @@ const handleCommand = (command) => {
 }
 
 .menu-item__separator li[data-separator="0,0"] {
-  background-image: url("../assets/images/line-single.svg");
+  background-image: url("../../assets/images/line-single.svg");
 }
 
 .menu-item__separator li[data-separator="1,1"] {
-  background-image: url("../assets/images/line-dot.svg");
+  background-image: url("../../assets/images/line-dot.svg");
 }
 
 .menu-item__separator li[data-separator="3,1"] {
-  background-image: url("../assets/images/line-dash-small-gap.svg");
+  background-image: url("../../assets/images/line-dash-small-gap.svg");
 }
 
 .menu-item__separator li[data-separator="4,4"] {
-  background-image: url("../assets/images/line-dash-large-gap.svg");
+  background-image: url("../../assets/images/line-dash-large-gap.svg");
 }
 
 .menu-item__separator li[data-separator="7,3,3,3"] {
-  background-image: url("../assets/images/line-dash-dot.svg");
+  background-image: url("../../assets/images/line-dash-dot.svg");
 }
 
 .menu-item__separator li[data-separator="6,2,2,2,2,2"] {
-  background-image: url("../assets/images/line-dash-dot-dot.svg");
+  background-image: url("../../assets/images/line-dash-dot-dot.svg");
 }
 
 .menu-item__watermark > i {
-  background-image: url("../assets/images/watermark.svg");
+  background-image: url("../../assets/images/watermark.svg");
 }
 
 .menu-item__watermark {
@@ -826,11 +826,11 @@ const handleCommand = (command) => {
 }
 
 .menu-item__codeblock i {
-  background-image: url("../assets/images/codeblock.svg");
+  background-image: url("../../assets/images/codeblock.svg");
 }
 
 .menu-item__page-break i {
-  background-image: url("../assets/images/page-break.svg");
+  background-image: url("../../assets/images/page-break.svg");
 }
 
 .menu-item__control {
@@ -838,15 +838,15 @@ const handleCommand = (command) => {
 }
 
 .menu-item__control i {
-  background-image: url("../assets/images/control.svg");
+  background-image: url("../../assets/images/control.svg");
 }
 
 .menu-item__checkbox i {
-  background-image: url("../assets/images/checkbox.svg");
+  background-image: url("../../assets/images/checkbox.svg");
 }
 
 .menu-item__latex i {
-  background-image: url("../assets/images/latex.svg");
+  background-image: url("../../assets/images/latex.svg");
 }
 
 .menu-item__date {
@@ -854,7 +854,7 @@ const handleCommand = (command) => {
 }
 
 .menu-item__date i {
-  background-image: url("../assets/images/date.svg");
+  background-image: url("../../assets/images/date.svg");
 }
 
 .menu-item__date .options {
@@ -862,7 +862,7 @@ const handleCommand = (command) => {
 }
 
 .menu-item__block i {
-  background-image: url("../assets/images/block.svg");
+  background-image: url("../../assets/images/block.svg");
 }
 
 .menu-item .menu-item__control .options {
@@ -874,7 +874,7 @@ const handleCommand = (command) => {
 }
 
 .menu-item__search i {
-  background-image: url("../assets/images/search.svg");
+  background-image: url("../../assets/images/search.svg");
 }
 
 .menu-item .menu-item__search__collapse {
@@ -988,7 +988,7 @@ const handleCommand = (command) => {
 }
 
 .menu-item .menu-item__search__collapse__search .arrow-left i {
-  background: url(../assets/images/arrow-left.svg) no-repeat;
+  background: url(../../assets/images/arrow-left.svg) no-repeat;
 }
 
 .menu-item .menu-item__search__collapse__search .arrow-right {
@@ -996,10 +996,10 @@ const handleCommand = (command) => {
 }
 
 .menu-item .menu-item__search__collapse__search .arrow-right i {
-  background: url(../assets/images/arrow-right.svg) no-repeat;
+  background: url(../../assets/images/arrow-right.svg) no-repeat;
 }
 
 .menu-item__print i {
-  background-image: url("../assets/images/print.svg");
+  background-image: url("../../assets/images/print.svg");
 }
 </style>

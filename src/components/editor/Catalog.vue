@@ -44,7 +44,7 @@
   height: 16px;
   cursor: pointer;
   display: inline-block;
-  background: url(../assets/images/close.svg) no-repeat;
+  background: url(../../assets/images/close.svg) no-repeat;
   transition: all 0.2s;
 }
 

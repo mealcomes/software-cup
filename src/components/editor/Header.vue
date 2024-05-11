@@ -17,7 +17,7 @@
 <script setup>
 import { Back, Share } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router';
-import { store } from '@/store';
+import { store } from '@/store/index.js';
 const router = useRouter()
 const goback = () => {
   router.go(-1)

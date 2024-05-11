@@ -103,7 +103,7 @@
   margin-right: 5px;
   cursor: pointer;
   display: inline-block;
-  background-image: url('../assets/images/catalog.svg');
+  background-image: url('../../assets/images/catalog.svg');
 }
 
 .footer .page-mode {
@@ -117,7 +117,7 @@
   margin-right: 5px;
   cursor: pointer;
   display: inline-block;
-  background-image: url('../assets/images/page-mode.svg');
+  background-image: url('../../assets/images/page-mode.svg');
 }
 
 .footer .options {
@@ -187,15 +187,15 @@
 }
 
 .footer .editor-option i {
-  background-image: url('../assets/images/option.svg');
+  background-image: url('../../assets/images/option.svg');
 }
 
 .footer .page-scale-minus i {
-  background-image: url('../assets/images/page-scale-minus.svg');
+  background-image: url('../../assets/images/page-scale-minus.svg');
 }
 
 .footer .page-scale-add i {
-  background-image: url('../assets/images/page-scale-add.svg');
+  background-image: url('../../assets/images/page-scale-add.svg');
 }
 
 .footer .page-scale-percentage {
@@ -204,15 +204,15 @@
 }
 
 .footer .fullscreen i {
-  background-image: url('../assets/images/request-fullscreen.svg');
+  background-image: url('../../assets/images/request-fullscreen.svg');
 }
 
 .footer .fullscreen.exist i {
-  background-image: url('../assets/images/exit-fullscreen.svg');
+  background-image: url('../../assets/images/exit-fullscreen.svg');
 }
 
 .footer .paper-margin i {
-  background-image: url('../assets/images/paper-margin.svg');
+  background-image: url('../../assets/images/paper-margin.svg');
 }
 
 .footer .editor-mode {
@@ -225,7 +225,7 @@
 }
 
 .footer .paper-size i {
-  background-image: url('../assets/images/paper-size.svg');
+  background-image: url('../../assets/images/paper-size.svg');
 }
 
 .footer .paper-size .options {
@@ -238,7 +238,7 @@
 }
 
 .footer .paper-direction i {
-  background-image: url('../assets/images/paper-direction.svg');
+  background-image: url('../../assets/images/paper-direction.svg');
 }
 
 .footer .paper-direction .options {
