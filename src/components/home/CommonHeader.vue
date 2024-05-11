@@ -71,7 +71,7 @@ import { Present, Plus, Money } from '@element-plus/icons-vue'
 import { ref } from 'vue'
 import FileName from '../../utils/FileName.vue'
 import { useRouter } from "vue-router";
-import { store } from '@/store';
+import { store } from '@/store/index.js';
 import mammoth from 'mammoth';
 import axios from 'axios';
 import { ElMessage } from 'element-plus';
@@ -97,7 +97,7 @@ const newCommand = async (command) => {
       store.fileId = res.data.id
       store.fileName = res.data.name
       store.editType = 'newFile'
-      router.push('/editor')
+      await router.push('/editor')
     } else {
       ElMessage({
         message: '新建失败',

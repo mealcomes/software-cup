@@ -9,11 +9,11 @@ import Editor, {
   ListType,
   RowFlex
 } from "@hufe921/canvas-editor";
-import { onMounted, defineProps } from 'vue'
+import { onMounted } from 'vue'
 import docxPlugin from "@hufe921/canvas-editor-plugin-docx";
 import Dialog from "@/pojo/dialog/Dialog.js";
 import { useRoute } from "vue-router";
-import { store } from "@/store";
+import { store } from "@/store/index.js";
 import axios from "axios";
 import { ElMessage } from "element-plus";
 
