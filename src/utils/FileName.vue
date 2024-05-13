@@ -9,7 +9,6 @@
 
 <script setup>
 import '../assets/font_icon/iconfont.js'
-import document from '../assets/font_icon/iconfont.json'
 import { ref, watch } from 'vue'
 
 const props = defineProps({
