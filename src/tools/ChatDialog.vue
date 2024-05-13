@@ -7,7 +7,7 @@
       <h4>多媒体素材中心</h4>
       <!-- <el-image src="https://paper-store-1311634119.cos.ap-nanjing.myqcloud.com/cover.jpg"></el-image> -->
       <el-upload style="display: flex; justify-content: space-between; align-items: center;"
-        :before-upload="beforeUpload">
+        :before-upload="beforeUpload" :show-file-list="false">
         <el-icon :size="20" style="margin-right: 10px; cursor: pointer;">
           <Plus />
         </el-icon>
@@ -16,40 +16,53 @@
     </div>
 
     <div class="divider" style="border: 1px solid #e6e6e6;"></div>
-    <el-dialog v-model="materialDialogVisible" :title="previewedMaterial?.material_name">
+    <el-dialog v-model="materialDialogVisible" :title="previewedMaterial?.material_name" :width="previewedMaterial?.material_type === 'audio'? '50%' : '70%'"
+      :z-index="9999">
+    >
       <div style="display: flex; justify-content: center; align-items: center;">
-        <div>
-          <audio v-if="previewedMaterial?.material_type === 'audio'"
+        <div v-if="previewedMaterial?.material_type === 'audio'">
+          <audio
             :src="'https:' + previewedMaterial?.source_file_url" controls></audio>
-          <el-image v-if="previewedMaterial?.material_type === 'image'"
-            :src="'https:' + previewedMaterial?.source_file_url" style="width: 100%;"></el-image>
-          <video v-if="previewedMaterial?.material_type === 'video'" :src="previewedMaterial?.source_file_url" controls
+          <el-descriptions :column="1" border class="margin-top" style="width: 70%; margin: 0 auto; margin-top: 10px;">
+            <el-descriptions-item>
+              <template #label>
+                语音识别结果
+              </template>
+              {{ previewedMaterial?.material_info.result }}
+            </el-descriptions-item>
+
+          </el-descriptions>
+          
+          
+        </div>
+        <div v-if="previewedMaterial?.material_type === 'image'" style="display: flex; justify-content: space-between; align-items: center;">
+          <el-image 
+            :src="'https:' + previewedMaterial?.source_file_url" style="flex: 1;"></el-image>
+          <div style="flex: 1;">
+            <p v-for="text in previewedMaterial.material_info">{{ text.words }}</p>
+          </div>
+        </div>
+        <div v-if="previewedMaterial?.material_type === 'video'">
+          <video :src="previewedMaterial?.source_file_url" controls
             style="width: 100%;"></video>
         </div>
 
       </div>
-      <el-descriptions :column="1" border class="margin-top" style="width: 70%; margin: 0 auto; margin-top: 10px;">
-        <el-descriptions-item>
-          <template #label>
-            语音识别结果
-          </template>
-          {{ previewedMaterial?.material_info.result }}
-        </el-descriptions-item>
 
-      </el-descriptions>
     </el-dialog>
     <ElCard v-for="material in materialList" :key="material.id" style="margin: 10px;" shadow="hover">
       <div style="display: flex; justify-content: space-between; align-items: center;">
-        <span>{{ material.material_name }}</span>
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <el-icon :size="15" style="margin-right: 10px; cursor: pointer;" class="material_icon"
-            @click="previewMaterial(material)">
-            <Menu />
-          </el-icon>
-          <el-icon :size="15" style="margin-right: 10px; cursor: pointer;" class="material_icon">
-            <Delete />
-          </el-icon>
-        </div>
+        <span>{{ material.material_name.length < 10 ? material.material_name : material.material_name.slice(0, 10)
+            + '...' }}</span>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <el-icon :size="15" style="margin-right: 10px; cursor: pointer;" class="material_icon"
+                @click="previewMaterial(material)">
+                <Menu />
+              </el-icon>
+              <el-icon :size="15" style="margin-right: 10px; cursor: pointer;" class="material_icon">
+                <Delete />
+              </el-icon>
+            </div>
       </div>
     </ElCard>
     <!-- <el-divider style=""></el-divider> -->
@@ -65,7 +78,7 @@
 import { Search, VideoPlay, VideoPause, CloseBold, Plus, ArrowDown, Delete, Menu } from "@element-plus/icons-vue";
 import { ElMessage, ElCard } from "element-plus";
 import { ref, onMounted } from "vue";
-import { asr } from "./api4ai";
+import { asr, ocr } from "./api4ai";
 import axios from "axios";
 import { store } from "@/store";
 const chatInput = ref("");
@@ -105,13 +118,49 @@ const fileMaterialUpload = (command) => {
   }
 }
 
-const beforeUpload = (file) => {
+const beforeUpload = async (file) => {
   // file is material
   console.log(file);
   // 判断文件是什么类型
   if (file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/gif') {
     // 图片
     console.log('图片');
+    const result = await ocr(file)
+    console.log(result);
+    const uploadFileInfo = await axios.post('/api/upload', {
+      file: file,
+      info: {
+        fileId: store.fileId,
+        fileName: file.name,
+        userName: 'Asuka'
+      }
+    }, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    console.log(uploadFileInfo);
+    if (uploadFileInfo.status === 200) {
+      ElMessage.success('上传成功')
+      axios.post('/api/material', {
+        file_id: store.fileId,
+        material_name: file.name,
+        material_type: 'image',
+        source_file_url: uploadFileInfo.data.Location,
+        material_info: result.message
+      })
+        .then(async (response) => {
+          console.log(response);
+          const materials = await axios.get('/api/material', {
+            params: {
+              file_id: store.fileId
+            }
+          })
+          materialList.value = materials.data
+        })
+    } else {
+      ElMessage.error('上传失败')
+    }
   } else if (file.type === 'audio/mp3' || file.type === 'audio/wav' || file.type === 'audio/ogg' || file.type === 'audio/mpeg') {
     // 音频
     console.log('音频');
@@ -162,8 +211,6 @@ const beforeUpload = (file) => {
             .catch(err => {
               console.log(err);
             })
-          onMessageWasSent({
-          })
         } else {
           ElMessage.error('上传失败')
         }

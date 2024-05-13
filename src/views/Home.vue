@@ -46,7 +46,7 @@
           <el-table-column prop="author" label="创建者" width="150" />
           <el-table-column prop="last_modified_time" label="最近修改时间" width="300" />
           <el-table-column prop="file_size" label="文件大小" width="100" />
-          <el-table-column label="操作">
+          <el-table-column fixed="right" label="操作" width="150">
             <template #default="scope">
               <el-button size="small" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
               <el-button size="small" type="success" @click="handleDelete(scope.$index, scope.row)">分享</el-button>

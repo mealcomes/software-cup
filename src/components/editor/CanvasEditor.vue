@@ -13,7 +13,7 @@ import { onMounted } from 'vue'
 import docxPlugin from "@hufe921/canvas-editor-plugin-docx";
 import Dialog from "@/pojo/dialog/Dialog.js";
 import { useRoute } from "vue-router";
-import { store } from "@/store/index.js";
+import { editorInstance, store } from "@/store/index.js";
 import axios from "axios";
 import { ElMessage } from "element-plus";
 
@@ -55,6 +55,9 @@ onMounted(async () => {
   editor.listener.saved = () => {
     console.log(save);
   }
+
+  editorInstance.value = editor
+
   if (store.editType === 'docxFile') {
     editor.use(docxPlugin)
     await editor.command.executeImportDocx({
@@ -80,6 +83,7 @@ onMounted(async () => {
   }
   const data = await editor.command.getValue()
   console.log(data);
+
 
   // 菜单弹窗销毁
   window.addEventListener(
@@ -1363,6 +1367,7 @@ onMounted(async () => {
 
   editor.listener.saved = async function (payload) {
     console.log('elementList: ', payload)
+    console.log(editor.command.getRange());
     const res = await axios.put(`/api/files/${store.fileId}`, {
       content: payload.data
     })
@@ -1372,6 +1377,7 @@ onMounted(async () => {
       ElMessage.error('保存失败')
     }
   }
+
 })
 
 </script>

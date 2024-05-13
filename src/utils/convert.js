@@ -146,3 +146,8 @@ function convertTextNodeToElement(textNode) {
     clipboardDom.remove();
     return elementList;
 }
+
+export function isEnglish(text) {
+    var regex = /^[A-Za-z ,.;:'"!?-]+$/;
+    return regex.test(text);
+}

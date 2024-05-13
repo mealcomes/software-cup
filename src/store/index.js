@@ -1,4 +1,4 @@
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 import Editor from '@hufe921/canvas-editor'
 
 export const store = reactive({
@@ -8,3 +8,5 @@ export const store = reactive({
     fileName: '',
     fileContent: null,
 })
+
+export const editorInstance = ref(null)
