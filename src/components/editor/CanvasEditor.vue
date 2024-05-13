@@ -1367,10 +1367,16 @@ onMounted(async () => {
 
   editor.listener.saved = async function (payload) {
     console.log('elementList: ', payload)
-    console.log(editor.command.getRange());
+    // console.log(editor.command.getRange());
+    // editor.command.executeAppendElementList([
+    //   {
+    //     value: 'abc'
+    //   }
+    // ])
     const res = await axios.put(`/api/files/${store.fileId}`, {
       content: payload.data
     })
+    console.log(res);
     if (res.status === 200) {
       ElMessage.success('保存成功')
     } else {
