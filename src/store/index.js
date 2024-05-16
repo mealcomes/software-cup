@@ -1,5 +1,4 @@
-import { reactive, ref } from 'vue'
-import Editor from '@hufe921/canvas-editor'
+import {reactive, ref} from 'vue'
 
 export const store = reactive({
     fileToConvert: null,

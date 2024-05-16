@@ -67,14 +67,14 @@
 </template>
 
 <script setup>
-import { Present, Plus, Money } from '@element-plus/icons-vue'
-import { ref } from 'vue'
-import FileName from '../../utils/FileName.vue'
-import { useRouter } from "vue-router";
-import { store } from '@/store/index.js';
+import {Money, Plus, Present} from '@element-plus/icons-vue'
+import {ref} from 'vue'
+import FileName from './FileIcon.vue'
+import {useRouter} from "vue-router";
+import {store} from '@/store/index.js';
 import mammoth from 'mammoth';
 import axios from 'axios';
-import { ElMessage } from 'element-plus';
+import {ElMessage} from 'element-plus';
 
 const newCommand = async (command) => {
   if (command === 'doc') {

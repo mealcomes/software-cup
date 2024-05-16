@@ -62,13 +62,13 @@
 import CommonHeader from "../components/home/CommonHeader.vue";
 import CommonAside from "../components/home/CommonAside.vue";
 import '../assets/font_icon/iconfont.js'
-import { onMounted, ref, watch } from 'vue'
+import {onMounted, ref, watch} from 'vue'
 import axios from "axios";
-import FileName from "@/utils/FileName.vue";
-import { EditPen, Delete, Star } from '@element-plus/icons-vue'
-import { ElMessage } from "element-plus";
-import { store } from "@/store";
-import { useRouter } from "vue-router";
+import FileName from "@/components/home/FileIcon.vue";
+import {Delete, EditPen, Star} from '@element-plus/icons-vue'
+import {ElMessage} from "element-plus";
+import {store} from "@/store";
+import {useRouter} from "vue-router";
 
 const router = useRouter()
 

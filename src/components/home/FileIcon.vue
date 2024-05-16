@@ -8,8 +8,8 @@
 </template>
 
 <script setup>
-import '../assets/font_icon/iconfont.js'
-import { ref, watch } from 'vue'
+import '../../assets/font_icon/iconfont.js'
+import {ref, watch} from 'vue'
 
 const props = defineProps({
     filename: {

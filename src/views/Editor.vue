@@ -1,6 +1,7 @@
 <template>
   <Header></Header>
   <Menu></Menu>
+  <Requirements></Requirements>
   <div class="container">
     <Catalog></Catalog>
     <CanvasEditor></CanvasEditor>
@@ -16,7 +17,7 @@ import Menu from '@/components/editor/Menu.vue';
 import Catalog from '@/components/editor/Catalog.vue';
 import CanvasEditor from '@/components/editor/CanvasEditor.vue';
 import Footer from '@/components/editor/Footer.vue';
-import ChatDialogVue from '@/tools/ChatDialog.vue'
+import ChatDialogVue from '@/components/editor/ChatDialog.vue'
 </script>
 
 <style scoped>

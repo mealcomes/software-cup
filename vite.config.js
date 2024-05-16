@@ -27,7 +27,7 @@ export default defineConfig({
     open: true,
     proxy: {
       '/api4ai': {
-        target: 'http://8.148.7.42:86',
+        target: 'http://localhost:86',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api4ai/, '')
       },

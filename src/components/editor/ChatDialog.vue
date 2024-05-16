@@ -3,7 +3,7 @@
     <!-- <el-tabs v-model="activeName" class="demo-tabs">
       <el-tab-pane label="在线编辑" name="second">Config</el-tab-pane>
     </el-tabs> -->
-    <div style="margin: 10px; margin-top: 20px; display: flex; justify-content: space-between; align-items: center;">
+    <div style="margin: 20px 10px 10px;display: flex; justify-content: space-between; align-items: center;">
       <h4>多媒体素材中心</h4>
       <!-- <el-image src="https://paper-store-1311634119.cos.ap-nanjing.myqcloud.com/cover.jpg"></el-image> -->
       <el-upload style="display: flex; justify-content: space-between; align-items: center;"
@@ -75,12 +75,13 @@
 </template>
 
 <script setup>
-import { Search, VideoPlay, VideoPause, CloseBold, Plus, ArrowDown, Delete, Menu } from "@element-plus/icons-vue";
-import { ElMessage, ElCard } from "element-plus";
-import { ref, onMounted } from "vue";
-import { asr, ocr } from "./api4ai";
+import {Delete, Menu, Plus} from "@element-plus/icons-vue";
+import {ElCard, ElMessage} from "element-plus";
+import {onMounted, ref} from "vue";
+import {afterOcr, asr, ocr} from "@/utils/api4ai.js";
 import axios from "axios";
-import { store } from "@/store";
+import {store} from "@/store/index.js";
+
 const chatInput = ref("");
 const activeName = ref("ai");
 const materialList = ref([])
@@ -124,43 +125,46 @@ const beforeUpload = async (file) => {
   // 判断文件是什么类型
   if (file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/gif') {
     // 图片
-    console.log('图片');
-    const result = await ocr(file)
-    console.log(result);
-    const uploadFileInfo = await axios.post('/api/upload', {
-      file: file,
-      info: {
-        fileId: store.fileId,
-        fileName: file.name,
-        userName: 'Asuka'
-      }
-    }, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    })
-    console.log(uploadFileInfo);
-    if (uploadFileInfo.status === 200) {
-      ElMessage.success('上传成功')
-      axios.post('/api/material', {
-        file_id: store.fileId,
-        material_name: file.name,
-        material_type: 'image',
-        source_file_url: uploadFileInfo.data.Location,
-        material_info: result.message
-      })
-        .then(async (response) => {
-          console.log(response);
-          const materials = await axios.get('/api/material', {
-            params: {
-              file_id: store.fileId
-            }
-          })
-          materialList.value = materials.data
-        })
-    } else {
-      ElMessage.error('上传失败')
+    console.log('type:图片');
+    const result = await ocr(file, 'image')
+    console.log('图片：', result.data.status);
+    if(result.status === 200 && result.data.status === 'ok') {
+      await afterOcr(file, result, materialList, 'image')
     }
+    // const uploadFileInfo = await axios.post('/api/upload', {
+    //   file: file,
+    //   info: {
+    //     fileId: store.fileId,
+    //     fileName: file.name,
+    //     userName: 'Asuka'
+    //   }
+    // }, {
+    //   headers: {
+    //     'Content-Type': 'multipart/form-data'
+    //   }
+    // })
+    // console.log(uploadFileInfo);
+    // if (uploadFileInfo.status === 200) {
+    //   ElMessage.success('上传成功')
+    //   axios.post('/api/material', {
+    //     file_id: store.fileId,
+    //     material_name: file.name,
+    //     material_type: 'image',
+    //     source_file_url: uploadFileInfo.data.Location,
+    //     material_info: result.message
+    //   })
+    //     .then(async (response) => {
+    //       console.log(response);
+    //       const materials = await axios.get('/api/material', {
+    //         params: {
+    //           file_id: store.fileId
+    //         }
+    //       })
+    //       materialList.value = materials.data
+    //     })
+    // } else {
+    //   ElMessage.error('上传失败')
+    // }
   } else if (file.type === 'audio/mp3' || file.type === 'audio/wav' || file.type === 'audio/ogg' || file.type === 'audio/mpeg') {
     // 音频
     console.log('音频');
@@ -222,6 +226,11 @@ const beforeUpload = async (file) => {
   } else if (file.type === 'application/pdf') {
     // pdf文件
     console.log('pdf文件');
+    const result = await ocr(file, 'pdf_file')
+    console.log('pdf：', result)
+    if(result.status === 200 && result.data.status === 'ok') {
+      await afterOcr(file, result, materialList, 'pdf_file')
+    }
   }
 
 }
@@ -240,8 +249,7 @@ const participants = [
   },
 ];
 
-const titleImageUrl =
-  "https://a.slack-edge.com/66f9/img/avatars-teams/ava_0001-34.png";
+const titleImageUrl = "https://a.slack-edge.com/66f9/img/avatars-teams/ava_0001-34.png";
 
 const onMessageWasSent = (message) =>
   (messageList.value = [...messageList.value, message]);
@@ -318,7 +326,7 @@ const handleOnType = () => {
 };
 
 const closeChat = () => {
-  // called when the user clicks on the botton to close the chat
+  // called when the user clicks on the button to close the chat
   isChatOpen.value = false;
 };
 
@@ -341,8 +349,9 @@ const editMessage = (message) => {
   right: 0;
   top: 90px;
   background-color: white;
-  border-left: rgba(0, 0, 0, 0.08) solid 0.8px;
+  border-left: rgba(0, 0, 0, 0.08) solid 1px;
   transition: right 0.3s ease;
+  overflow: scroll;
 }
 
 .hidden {

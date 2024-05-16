@@ -1,6 +1,6 @@
 <script setup>
 import {ElMessage} from "element-plus";
-import AItoolBox from '../../tools/AItoolBox.vue'
+import AItoolBox from './AItoolBox.vue'
 
 const handleCommand = (command) => {
   ElMessage(`click on item ${command}`)

@@ -1,5 +1,5 @@
 <script setup>
-import { debounce, nextTick } from "@/utils/index.js";
+import {debounce, nextTick} from "@/utils/index.js";
 import Editor, {
   BlockType,
   ControlType,
@@ -9,13 +9,13 @@ import Editor, {
   ListType,
   RowFlex
 } from "@hufe921/canvas-editor";
-import { onMounted } from 'vue'
+import {onMounted} from 'vue'
 import docxPlugin from "@hufe921/canvas-editor-plugin-docx";
 import Dialog from "@/pojo/dialog/Dialog.js";
-import { useRoute } from "vue-router";
-import { editorInstance, store } from "@/store/index.js";
+import {useRoute} from "vue-router";
+import {editorInstance, store} from "@/store/index.js";
 import axios from "axios";
-import { ElMessage } from "element-plus";
+import {ElMessage} from "element-plus";
 
 const route = useRoute()
 const wordFile = store.fileToConvert

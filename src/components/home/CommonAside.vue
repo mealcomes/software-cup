@@ -28,7 +28,7 @@
 
 <script setup>
 // import { useRouter } from "vue-router";
-import { Search, House, Star } from "@element-plus/icons-vue";
+import {House, Search, Star} from "@element-plus/icons-vue";
 // import { ref } from "vue";
 // const router = useRouter();
 // const isCollapse = ref(false);

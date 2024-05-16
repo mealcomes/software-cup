@@ -1,13 +1,4 @@
 <script setup>
-import CanvasEditor from "@/components/editor/CanvasEditor.vue";
-import Menu from "@/components/editor/Menu.vue";
-import Catalog from "@/components/editor/Catalog.vue";
-import Footer from "@/components/editor/Footer.vue";
-import {ArrowDown} from "@element-plus/icons-vue";
-import Header from "./components/editor/Header.vue";
-import ChatDialogVue from './tools/ChatDialog.vue';
-import Home from "./views/Home.vue";
-import Editor from "@/views/Editor.vue";
 
 // export default {
 //   components: {
