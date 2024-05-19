@@ -195,23 +195,34 @@ async function deleteMaterial(file_id, id){
           message: `删除中，请稍后...`
         })
         try {
-          const res = await axios.delete(`/api/material?file_id=${file_id}&id=${id}`)
-          const materials = await axios.get('/api/material', {
-            params: {
-              file_id: store.fileId
-            }
+          const deleteFileInfo = await axios.post('/api/delete', {
+            id: id
           })
-          materialList.value = materials.data
+          if(deleteFileInfo.status === 200 && deleteFileInfo.data.status === 'ok'){
+            const res = await axios.delete(`/api/material?file_id=${file_id}&id=${id}`)
 
-          msg.close()
-          if(res.status === 200 && res.data.status === 'ok'){
-            ElMessage.success('删除成功')
+            msg.close()
+            if(res.status === 200 && res.data.status === 'ok'){
+              ElMessage.success('删除成功')
+            }
+            else {
+              ElMessage.error('删除失败')
+            }
+            const materials = await axios.get('/api/material', {
+              params: {
+                file_id: store.fileId
+              }
+            })
+            materialList.value = materials.data
           }
-          else {
+          else{
+            msg.close()
             ElMessage.error('删除失败')
           }
+
         } catch (e) {
           console.log(e);
+          msg.close()
           ElMessage.error('删除失败')
         }
       })
