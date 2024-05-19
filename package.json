@@ -20,8 +20,10 @@
     "markmap-lib": "^0.17.0",
     "markmap-render": "^0.17.0",
     "markmap-view": "^0.17.0",
+    "pdfjs-dist": "^4.2.67",
     "v-dropdown": "^3.0.0",
     "vue": "^3.4.21",
+    "vue-pdf": "^4.3.0",
     "vue-router": "4",
     "vue3-beautiful-chat": "^3.3.1"
   },

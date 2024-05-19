@@ -23,18 +23,16 @@
         <div v-if="previewedMaterial?.material_type === 'audio'">
           <audio
             :src="'https:' + previewedMaterial?.source_file_url" controls></audio>
-          <el-descriptions :column="1" border class="margin-top" style="width: 70%; margin: 0 auto; margin-top: 10px;">
+          <el-descriptions :column="1" border class="margin-top" style="width: 70%; margin: 10px auto 0;">
             <el-descriptions-item>
               <template #label>
                 语音识别结果
               </template>
               {{ previewedMaterial?.material_info.result }}
             </el-descriptions-item>
-
           </el-descriptions>
-          
-          
         </div>
+
         <div v-if="previewedMaterial?.material_type === 'image'" style="display: flex; justify-content: space-between; align-items: center;">
           <el-image 
             :src="'https:' + previewedMaterial?.source_file_url" style="flex: 1;"></el-image>
@@ -42,6 +40,16 @@
             <p v-for="text in previewedMaterial.material_info">{{ text.words }}</p>
           </div>
         </div>
+
+        <div v-if="previewedMaterial?.material_type === 'pdf_file'" style="display: flex; justify-content: space-between; align-items: center;">
+
+          <embed :src="'https:' + previewedMaterial?.source_file_url" style="flex: 1;"/>
+
+          <div style="flex: 1;">
+            <p v-for="text in previewedMaterial.material_info">{{ text.words }}</p>
+          </div>
+        </div>
+
         <div v-if="previewedMaterial?.material_type === 'video'">
           <video :src="previewedMaterial?.source_file_url" controls
             style="width: 100%;"></video>
@@ -59,7 +67,8 @@
                 @click="previewMaterial(material)">
                 <Menu />
               </el-icon>
-              <el-icon :size="15" style="margin-right: 10px; cursor: pointer;" class="material_icon">
+              <el-icon :size="15" style="margin-right: 10px; cursor: pointer;" class="material_icon"
+                @click="deleteMaterial(store.fileId, material.id)">
                 <Delete />
               </el-icon>
             </div>
@@ -76,11 +85,12 @@
 
 <script setup>
 import {Delete, Menu, Plus} from "@element-plus/icons-vue";
-import {ElCard, ElMessage} from "element-plus";
+import {ElCard, ElDialog, ElMessage, ElMessageBox} from "element-plus";
 import {onMounted, ref} from "vue";
-import {afterOcr, asr, ocr} from "@/utils/api4ai.js";
+import {afterCr, asr, ocr} from "@/utils/api4ai.js";
 import axios from "axios";
 import {store} from "@/store/index.js";
+
 
 const chatInput = ref("");
 const activeName = ref("ai");
@@ -121,53 +131,19 @@ const fileMaterialUpload = (command) => {
 
 const beforeUpload = async (file) => {
   // file is material
-  console.log(file);
+  ElMessage.info('正在上传中...')
   // 判断文件是什么类型
   if (file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/gif') {
     // 图片
-    console.log('type:图片');
     const result = await ocr(file, 'image')
-    console.log('图片：', result.data.status);
     if(result.status === 200 && result.data.status === 'ok') {
-      await afterOcr(file, result, materialList, 'image')
+      await afterCr(file, result, materialList, 'image')
     }
-    // const uploadFileInfo = await axios.post('/api/upload', {
-    //   file: file,
-    //   info: {
-    //     fileId: store.fileId,
-    //     fileName: file.name,
-    //     userName: 'Asuka'
-    //   }
-    // }, {
-    //   headers: {
-    //     'Content-Type': 'multipart/form-data'
-    //   }
-    // })
-    // console.log(uploadFileInfo);
-    // if (uploadFileInfo.status === 200) {
-    //   ElMessage.success('上传成功')
-    //   axios.post('/api/material', {
-    //     file_id: store.fileId,
-    //     material_name: file.name,
-    //     material_type: 'image',
-    //     source_file_url: uploadFileInfo.data.Location,
-    //     material_info: result.message
-    //   })
-    //     .then(async (response) => {
-    //       console.log(response);
-    //       const materials = await axios.get('/api/material', {
-    //         params: {
-    //           file_id: store.fileId
-    //         }
-    //       })
-    //       materialList.value = materials.data
-    //     })
-    // } else {
-    //   ElMessage.error('上传失败')
-    // }
-  } else if (file.type === 'audio/mp3' || file.type === 'audio/wav' || file.type === 'audio/ogg' || file.type === 'audio/mpeg') {
-    // 音频
-    console.log('音频');
+    else{
+      ElMessage.error('上传失败！')
+    }
+  }
+  else if (file.type === 'audio/mp3' || file.type === 'audio/wav' || file.type === 'audio/ogg' || file.type === 'audio/mpeg') {
     // 判断音频时长
     const audio = new Audio(URL.createObjectURL(file));
     audio.addEventListener('loadedmetadata', async () => {
@@ -175,66 +151,77 @@ const beforeUpload = async (file) => {
       if (duration > 50) {
         ElMessage.error('音频时长不能超过50秒');
       } else {
-        // 音频时长符合要求，可以上传
-        // 执行上传逻辑
-        // ...
         const result = await asr(file)
-        console.log(result);
-        const upload = async () => {
-          const uploadFileInfo = await axios.post('/api/upload', {
-            file: file,
-            info: {
-              fileId: store.fileId,
-              fileName: file.name,
-              userName: 'Asuka'
-            }
-          }, {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }
-          })
-          return uploadFileInfo
+        if(result.status === 200 && result.data.status === 'ok'){
+          await afterCr(file, result, materialList, 'audio')
         }
-        const uploadFileInfo = await upload()
-        console.log(uploadFileInfo);
-        if (uploadFileInfo.status === 200) {
-          ElMessage.success('上传成功')
-          axios.post('/api/material', {
-            file_id: store.fileId,
-            material_name: file.name,
-            material_type: 'audio',
-            source_file_url: uploadFileInfo.data.Location,
-            material_info: result,
-          })
-            .then(async res => {
-              console.log(res);
-              const materials = await axios.get(`/api/material?file_id=${store.fileId}`)
-              console.log(materials);
-              materialList.value = materials.data
-            })
-            .catch(err => {
-              console.log(err);
-            })
-        } else {
+        else{
           ElMessage.error('上传失败')
         }
       }
     });
-  } else if (file.type === 'video/mp4' || file.type === 'video/avi' || file.type === 'video/flv') {
+  }
+  else if (file.type === 'video/mp4' || file.type === 'video/avi' || file.type === 'video/flv') {
     // 视频
     console.log('视频');
-  } else if (file.type === 'application/pdf') {
+  }
+  else if (file.type === 'application/pdf') {
     // pdf文件
-    console.log('pdf文件');
     const result = await ocr(file, 'pdf_file')
-    console.log('pdf：', result)
     if(result.status === 200 && result.data.status === 'ok') {
-      await afterOcr(file, result, materialList, 'pdf_file')
+      await afterCr(file, result, materialList, 'pdf_file')
+    }
+    else{
+      ElMessage.error('上传失败')
     }
   }
 
 }
 
+async function deleteMaterial(file_id, id){
+  ElMessageBox.confirm(
+      '确定删除该素材？',
+      'Warning',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }
+  )
+      .then(async () => {
+        const msg = ElMessage({
+          showClose: true,
+          duration: 0,
+          message: `删除中，请稍后...`
+        })
+        try {
+          const res = await axios.delete(`/api/material?file_id=${file_id}&id=${id}`)
+          const materials = await axios.get('/api/material', {
+            params: {
+              file_id: store.fileId
+            }
+          })
+          materialList.value = materials.data
+
+          msg.close()
+          if(res.status === 200 && res.data.status === 'ok'){
+            ElMessage.success('删除成功')
+          }
+          else {
+            ElMessage.error('删除失败')
+          }
+        } catch (e) {
+          console.log(e);
+          ElMessage.error('删除失败')
+        }
+      })
+      .catch(() => {
+        ElMessage({
+          type: 'info',
+          message: '取消删除！',
+        })
+      })
+}
 
 const participants = [
   {

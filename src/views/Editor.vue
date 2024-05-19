@@ -1,7 +1,6 @@
 <template>
   <Header></Header>
   <Menu></Menu>
-  <Requirements></Requirements>
   <div class="container">
     <Catalog></Catalog>
     <CanvasEditor></CanvasEditor>

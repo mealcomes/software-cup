@@ -6,23 +6,16 @@ import {ElMessage} from "element-plus";
 export const asr = async (file) => {
     const formData = new FormData();
     formData.append("file", file);
-    const response = await axios.post("/api4ai/asr", formData)
-    console.log(response);
-    return response.data;
+    return await axios.post("/api4ai/asr", formData);
 }
 
 export const ocr = async (file, type) => {
     const formData = new FormData();
     formData.append(name=type, file);
-    // const formData = {
-    //     'pdf_file': file
-    // }
-    const response = await axios.post("/api4ai/ocr", formData)
-    console.log(response);
-    return response;
+    return await axios.post("/api4ai/ocr", formData);
 }
 
-export const afterOcr = async (file, result, materialList, type) => {
+export const afterCr = async (file, result, materialList, type) => {
     const uploadFileInfo = await axios.post('/api/upload', {
         file: file,
         info: {
@@ -35,18 +28,15 @@ export const afterOcr = async (file, result, materialList, type) => {
             'Content-Type': 'multipart/form-data'
         }
     })
-    console.log(uploadFileInfo);
-    if (uploadFileInfo.status === 200) {
-        ElMessage.success('上传成功')
+    if (uploadFileInfo.status === 200 && uploadFileInfo.data.status === 'ok') {
         axios.post('/api/material', {
             file_id: store.fileId,
             material_name: file.name,
             material_type: type,
-            source_file_url: uploadFileInfo.data.Location,
+            source_file_url: uploadFileInfo.data.message,
             material_info: result.data.message
         })
             .then(async (response) => {
-                console.log(response);
                 const materials = await axios.get('/api/material', {
                     params: {
                         file_id: store.fileId
@@ -54,6 +44,7 @@ export const afterOcr = async (file, result, materialList, type) => {
                 })
                 materialList.value = materials.data
             })
+        ElMessage.success('上传成功')
     } else {
         ElMessage.error('上传失败')
     }
