@@ -17,10 +17,17 @@
 <script setup>
 import {Back, Share} from '@element-plus/icons-vue'
 import {useRouter} from 'vue-router';
-import {store} from '@/store/index.js';
+import {editorInstance, store} from '@/store/index.js';
 
 const router = useRouter()
 const goback = () => {
+    editorInstance.value.listener.visiblePageNoListChange = null
+    editorInstance.value.listener.pageSizeChange = null
+    editorInstance.value.listener.intersectionPageNoChange = null
+    editorInstance.value.listener.pageScaleChange = null
+    editorInstance.value.listener.controlChange = null
+    editorInstance.value.listener.pageModeChange = null
+
   router.go(-1)
 }
 </script>

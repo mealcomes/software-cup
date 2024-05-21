@@ -5,7 +5,7 @@
       <!-- 图标的展示 -->
       <!-- <el-image src="https://paper-store-1311634119.cos.ap-nanjing.myqcloud.com/test1-jpg?q-sign-algorithm=sha1&q-ak=AKID8w1lJKV4DFrxG1lbaPduknMS0RY8bkGukbt8cZoEhZIAHFm1Okjxl59qIkrzBLhg&q-sign-time=1715260160;1715263760&q-key-time=1715260160;1715263760&q-header-list=host&q-url-param-list=&q-signature=af684c13bb42e537e5efcd5e782c1e5cd31c1850&x-cos-security-token=CPFToFG8TzwYoFQJRUVXmOYXtRJ6Disaf0ba42c774af8c94408cab64140c00a0N78_Z1hWHZybRNZUa68HDsPT70om0oll9i0lV3N5exV0p3A0Qrp67I5uG3X00Dcx4Q4PHpoy2Kg2Yv6Hbvu72lFd6rj3YB1jG0SMPlhLlGdbE9n20nz8H913CDCFnZ_9G0Sb2IAyZFt9T_YHbbT37N0kA1u_Bwh7GxFXPYGOTwTi5IrACQdpOhigKC2DDxvn"></el-image> -->
       <el-dropdown trigger="click" :on-change="onFileUploaded" @command="newCommand">
-        <el-button :icon="Plus" type="primary" size="">
+        <el-button :icon="Plus" type="primary">
           新建
         </el-button>
         <template #dropdown>
@@ -75,11 +75,12 @@ import {store} from '@/store/index.js';
 import mammoth from 'mammoth';
 import axios from 'axios';
 import {ElMessage} from 'element-plus';
+import * as Data from "ant-design-vue/es/_util/hooks/_vueuse/is.js";
 
 const newCommand = async (command) => {
   if (command === 'doc') {
     const res = await axios.post('/api/files', {
-      name: '未命名文件.docx',
+      name: '未命名文件-' + Data.now().toString() + '.docx',
       content: {
         header: [],
         main: [{value: ''}],

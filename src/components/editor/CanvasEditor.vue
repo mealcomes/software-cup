@@ -19,42 +19,31 @@ import {ElMessage} from "element-plus";
 
 const route = useRoute()
 const wordFile = store.fileToConvert
-console.log(route.query);
 
 // const props = defineProps({
 //   file: Object
 // })
 
+
 onMounted(async () => {
   const isApple =
-    typeof navigator !== 'undefined' && /Mac OS X/.test(navigator.userAgent)
+      typeof navigator !== 'undefined' && /Mac OS X/.test(navigator.userAgent)
   const editor = new Editor(
-    document.querySelector('.editor'),
-    {
-      main: [
-        {
-          value: ''
-        }
-      ],
-      IPageNumber: [
-        {
-          format: 'page-number'
-        }
-      ]
-    },
-    {}
+      document.querySelector('.editor'),
+      {
+        main: [
+          {
+            value: ''
+          }
+        ],
+        IPageNumber: [
+          {
+            format: 'page-number'
+          }
+        ]
+      },
+      {}
   )
-  console.log(11);
-  editor.listener.contentChange = () => {
-    console.log(11);
-  }
-  editor.listener.contentChange = () => {
-    console.log(11);
-    console.log(editor.command.getValue());
-  }
-  editor.listener.saved = () => {
-    console.log(save);
-  }
 
   editorInstance.value = editor
 
@@ -79,7 +68,7 @@ onMounted(async () => {
       ElMessage.error('导入失败')
     }
   } else if (store.editType === 'reditFile') {
-    editor.command.executeSetValue(store.fileContent)
+    editor.command.executeSetValue(JSON.parse(store.fileContent))
   }
   const data = await editor.command.getValue()
   console.log(data);
@@ -87,15 +76,15 @@ onMounted(async () => {
 
   // 菜单弹窗销毁
   window.addEventListener(
-    'click',
-    evt => {
-      const visibleDom = document.querySelector('.visible')
-      if (!visibleDom || visibleDom.contains(evt.target)) return
-      visibleDom.classList.remove('visible')
-    },
-    {
-      capture: true
-    }
+      'click',
+      evt => {
+        const visibleDom = document.querySelector('.visible')
+        if (!visibleDom || visibleDom.contains(evt.target)) return
+        visibleDom.classList.remove('visible')
+      },
+      {
+        capture: true
+      }
   )
 
   // | 撤销 | 重做 | 格式刷 | 清除格式 |
@@ -137,15 +126,15 @@ onMounted(async () => {
     console.log('painter-dblclick')
     isFirstClick = true
     window.clearTimeout(painterTimeout)
-    editor.command.executePainter({ isDblclick: true })
+    editor.command.executePainter({isDblclick: true})
   }
 
   // 清除样式
   document.querySelector('.menu-item__format').onclick =
-    function () {
-      console.log('format')
-      editor.command.executeFormat()
-    }
+      function () {
+        console.log('format')
+        editor.command.executeFormat()
+      }
 
   // | 字体 | 字体变大 | 字体变小 | 加粗 | 斜体 | 下划线 | 删除线 | 上标 | 下标 | 字体颜色 | 背景色 |
   const fontDom = document.querySelector('.menu-item__font')
@@ -229,7 +218,9 @@ onMounted(async () => {
       style: decorationStyle
     })
     underlineOptionDom.querySelectorAll('li')
-      .forEach(child => { child.classList.remove('active') })
+        .forEach(child => {
+          child.classList.remove('active')
+        })
     li.classList.add('active')
     underlineOptionDom.classList.remove('visible')
   }
@@ -386,16 +377,19 @@ onMounted(async () => {
   }
   let colIndex = 0
   let rowIndex = 0
+
   // 移除所有格选择
   function removeAllTableCellSelect() {
     tableCellList.forEach(tr => {
       tr.forEach(td => td.classList.remove('active'))
     })
   }
+
   // 设置标题内容
   function setTableTitle(payload) {
     tableTitle.innerText = payload
   }
+
   // 恢复初始状态
   function recoveryTable() {
     // 还原选择样式、标题、选择行列
@@ -406,6 +400,7 @@ onMounted(async () => {
     // 隐藏panel
     tablePanelContainer.style.display = 'none'
   }
+
   tableDom.onclick = function () {
     console.log('table')
     tablePanelContainer.style.display = 'block'
@@ -414,7 +409,7 @@ onMounted(async () => {
     const celSize = 16
     const rowMarginTop = 10
     const celMarginRight = 6
-    const { offsetX, offsetY } = evt
+    const {offsetX, offsetY} = evt
     // 移除所有选择
     removeAllTableCellSelect()
     colIndex = Math.ceil(offsetX / (celSize + celMarginRight)) || 1
@@ -484,7 +479,9 @@ onMounted(async () => {
     }
     editor.command.executeSeparator(payload)
     separatorOptionDom.querySelectorAll('li')
-      .forEach(child => { child.classList.remove('active') })
+        .forEach(child => {
+          child.classList.remove('active')
+        })
     li.classList.add('active')
   }
 
@@ -527,7 +524,7 @@ onMounted(async () => {
           ],
           onConfirm: payload => {
             const placeholder = payload.find(
-              p => p.name === 'placeholder'
+                p => p.name === 'placeholder'
             )?.value
             if (!placeholder) return
             const value = payload.find(p => p.name === 'value')?.value || ''
@@ -538,11 +535,11 @@ onMounted(async () => {
                 control: {
                   type,
                   value: value ? [
-                    {
-                      value
-                    }
-                  ]
-                    : null,
+                        {
+                          value
+                        }
+                      ]
+                      : null,
                   placeholder
                 }
               }
@@ -578,7 +575,7 @@ onMounted(async () => {
           ],
           onConfirm: payload => {
             const placeholder = payload.find(
-              p => p.name === 'placeholder'
+                p => p.name === 'placeholder'
             )?.value
             if (!placeholder) return
             const valueSets = payload.find(p => p.name === 'valueSets')?.value
@@ -830,15 +827,17 @@ onMounted(async () => {
   const searchDom = document.querySelector('.menu-item__search')
   searchDom.title = `搜索与替换(${isApple ? '⌘' : 'Ctrl'}+F)`
   const searchResultDom = searchCollapseDom.querySelector('.search-result')
+
   function setSearchResult() {
     const result = editor.command.getSearchNavigateInfo()
     if (result) {
-      const { index, count } = result
+      const {index, count} = result
       searchResultDom.innerText = `${index}/${count}`
     } else {
       searchResultDom.innerText = ''
     }
   }
+
   searchDom.onclick = function () {
     console.log('search')
     searchCollapseDom.style.display = 'block'
@@ -854,13 +853,13 @@ onMounted(async () => {
     searchInputDom.focus()
   }
   searchCollapseDom.querySelector('span').onclick =
-    function () {
-      searchCollapseDom.style.display = 'none'
-      searchInputDom.value = ''
-      replaceInputDom.value = ''
-      editor.command.executeSearch(null)
-      setSearchResult()
-    }
+      function () {
+        searchCollapseDom.style.display = 'none'
+        searchInputDom.value = ''
+        replaceInputDom.value = ''
+        editor.command.executeSearch(null)
+        setSearchResult()
+      }
   searchInputDom.oninput = function () {
     editor.command.executeSearch(searchInputDom.value || null)
     setSearchResult()
@@ -872,23 +871,23 @@ onMounted(async () => {
     }
   }
   searchCollapseDom.querySelector('button').onclick =
-    function () {
-      const searchValue = searchInputDom.value
-      const replaceValue = replaceInputDom.value
-      if (searchValue && replaceValue && searchValue !== replaceValue) {
-        editor.command.executeReplace(replaceValue)
+      function () {
+        const searchValue = searchInputDom.value
+        const replaceValue = replaceInputDom.value
+        if (searchValue && replaceValue && searchValue !== replaceValue) {
+          editor.command.executeReplace(replaceValue)
+        }
       }
-    }
   searchCollapseDom.querySelector('.arrow-left').onclick =
-    function () {
-      editor.command.executeSearchNavigatePre()
-      setSearchResult()
-    }
+      function () {
+        editor.command.executeSearchNavigatePre()
+        setSearchResult()
+      }
   searchCollapseDom.querySelector('.arrow-right').onclick =
-    function () {
-      editor.command.executeSearchNavigateNext()
-      setSearchResult()
-    }
+      function () {
+        editor.command.executeSearchNavigateNext()
+        setSearchResult()
+      }
 
   // 打印
   const printDom = document.querySelector('.menu-item__print')
@@ -930,12 +929,12 @@ onMounted(async () => {
   async function updateCatalog() {
     const catalog = await editor.command.getCatalog()
     const catalogMainDom =
-      document.querySelector('.catalog__main')
+        document.querySelector('.catalog__main')
     catalogMainDom.innerHTML = ''
     if (catalog) {
       const appendCatalog = (
-        parent,
-        catalogItems
+          parent,
+          catalogItems
       ) => {
         for (let c = 0; c < catalogItems.length; c++) {
           const catalogItem = catalogItems[c]
@@ -962,6 +961,7 @@ onMounted(async () => {
       appendCatalog(catalogMainDom, catalog)
     }
   }
+
   let isCatalogShow = true
   const catalogDom = document.querySelector('.catalog')
   const catalogModeDom = document.querySelector('.catalog-mode')
@@ -987,7 +987,7 @@ onMounted(async () => {
     const li = evt.target
     editor.command.executePageMode(li.dataset.pageMode)
     pageModeOptionsDom.querySelectorAll('li')
-      .forEach(child => child.classList.remove('active'))
+        .forEach(child => child.classList.remove('active'))
     li.classList.add('active')
   }
 
@@ -998,16 +998,16 @@ onMounted(async () => {
   }
   // 纸张缩小
   document.querySelector('.page-scale-minus').onclick =
-    function () {
-      console.log('page-scale-minus')
-      editor.command.executePageScaleMinus()
-    }
+      function () {
+        console.log('page-scale-minus')
+        editor.command.executePageScaleMinus()
+      }
   //纸张放大
   document.querySelector('.page-scale-add').onclick =
-    function () {
-      console.log('page-scale-add')
-      editor.command.executePageScaleAdd()
-    }
+      function () {
+        console.log('page-scale-add')
+        editor.command.executePageScaleAdd()
+      }
 
   // 纸张大小
   const paperSizeDom = document.querySelector('.paper-size')
@@ -1022,7 +1022,7 @@ onMounted(async () => {
     editor.command.executePaperSize(width, height)
     // 纸张状态回显
     paperSizeDomOptionsDom.querySelectorAll('li')
-      .forEach(child => child.classList.remove('active'))
+        .forEach(child => child.classList.remove('active'))
     li.classList.add('active')
   }
 
@@ -1038,7 +1038,7 @@ onMounted(async () => {
     editor.command.executePaperDirection(paperDirection)
     // 纸张方向状态回显
     paperDirectionDomOptionsDom.querySelectorAll('li')
-      .forEach(child => child.classList.remove('active'))
+        .forEach(child => child.classList.remove('active'))
     li.classList.add('active')
   }
 
@@ -1113,6 +1113,7 @@ onMounted(async () => {
   document.addEventListener('fullscreenchange', () => {
     fullscreenDom.classList.toggle('exist')
   })
+
   function toggleFullscreen() {
     console.log('fullscreen')
     if (!document.fullscreenElement) {
@@ -1151,7 +1152,7 @@ onMounted(async () => {
     // 模式选择循环
     modeIndex === modeList.length - 1 ? (modeIndex = 0) : modeIndex++
     // 设置模式
-    const { name, mode } = modeList[modeIndex]
+    const {name, mode} = modeList[modeIndex]
     modeElement.innerText = name
     editor.command.executeMode(mode)
     // 设置菜单栏权限视觉反馈
@@ -1160,8 +1161,8 @@ onMounted(async () => {
     document.querySelectorAll('.menu-item>div').forEach(dom => {
       const menu = dom.dataset.menu
       isReadonly && (!menu || !enableMenuList.includes(menu))
-        ? dom.classList.add('disable')
-        : dom.classList.remove('disable')
+          ? dom.classList.add('disable')
+          : dom.classList.remove('disable')
     })
   }
 
@@ -1169,17 +1170,17 @@ onMounted(async () => {
   editor.listener.rangeStyleChange = function (payload) {
     // 控件类型
     payload.type === ElementType.SUBSCRIPT
-      ? subscriptDom.classList.add('active')
-      : subscriptDom.classList.remove('active')
+        ? subscriptDom.classList.add('active')
+        : subscriptDom.classList.remove('active')
     payload.type === ElementType.SUPERSCRIPT
-      ? superscriptDom.classList.add('active')
-      : superscriptDom.classList.remove('active')
+        ? superscriptDom.classList.add('active')
+        : superscriptDom.classList.remove('active')
     payload.type === ElementType.SEPARATOR
-      ? separatorDom.classList.add('active')
-      : separatorDom.classList.remove('active')
+        ? separatorDom.classList.add('active')
+        : separatorDom.classList.remove('active')
     separatorOptionDom
-      .querySelectorAll('li')
-      .forEach(li => li.classList.remove('active'))
+        .querySelectorAll('li')
+        .forEach(li => li.classList.remove('active'))
     if (payload.type === ElementType.SEPARATOR) {
       const separator = payload.dashArray.join(',') || '0,0'
       const curSeparatorDom = separatorOptionDom.querySelector(`[data-separator=${separator}]`)
@@ -1190,8 +1191,8 @@ onMounted(async () => {
 
     // 富文本
     fontOptionDom
-      .querySelectorAll('li')
-      .forEach(li => li.classList.remove('active'))
+        .querySelectorAll('li')
+        .forEach(li => li.classList.remove('active'))
     const curFontDom = fontOptionDom.querySelector(`[data-family='${payload.font}']`)
     if (curFontDom) {
       fontSelectDom.innerText = curFontDom.innerText
@@ -1199,10 +1200,10 @@ onMounted(async () => {
       curFontDom.classList.add('active')
     }
     sizeOptionDom
-      .querySelectorAll('li')
-      .forEach(li => li.classList.remove('active'))
+        .querySelectorAll('li')
+        .forEach(li => li.classList.remove('active'))
     const curSizeDom = sizeOptionDom.querySelector(
-      `[data-size='${payload.size}']`
+        `[data-size='${payload.size}']`
     )
     if (curSizeDom) {
       sizeSelectDom.innerText = curSizeDom.innerText
@@ -1211,17 +1212,17 @@ onMounted(async () => {
       sizeSelectDom.innerText = `${payload.size}`
     }
     payload.bold
-      ? boldDom.classList.add('active')
-      : boldDom.classList.remove('active')
+        ? boldDom.classList.add('active')
+        : boldDom.classList.remove('active')
     payload.italic
-      ? italicDom.classList.add('active')
-      : italicDom.classList.remove('active')
+        ? italicDom.classList.add('active')
+        : italicDom.classList.remove('active')
     payload.underline
-      ? underlineDom.classList.add('active')
-      : underlineDom.classList.remove('active')
+        ? underlineDom.classList.add('active')
+        : underlineDom.classList.remove('active')
     payload.strikeout
-      ? strikeoutDom.classList.add('active')
-      : strikeoutDom.classList.remove('active')
+        ? strikeoutDom.classList.add('active')
+        : strikeoutDom.classList.remove('active')
     if (payload.color) {
       colorDom.classList.add('active')
       colorControlDom.value = payload.color
@@ -1258,26 +1259,26 @@ onMounted(async () => {
 
     // 行间距
     rowOptionDom
-      .querySelectorAll('li')
-      .forEach(li => li.classList.remove('active'))
+        .querySelectorAll('li')
+        .forEach(li => li.classList.remove('active'))
     const curRowMarginDom = rowOptionDom.querySelector(`[data-rowmargin='${payload.rowMargin}']`)
     curRowMarginDom.classList.add('active')
 
     // 功能
     payload.undo
-      ? undoDom.classList.remove('no-allow')
-      : undoDom.classList.add('no-allow')
+        ? undoDom.classList.remove('no-allow')
+        : undoDom.classList.add('no-allow')
     payload.redo
-      ? redoDom.classList.remove('no-allow')
-      : redoDom.classList.add('no-allow')
+        ? redoDom.classList.remove('no-allow')
+        : redoDom.classList.add('no-allow')
     payload.painter
-      ? painterDom.classList.add('active')
-      : painterDom.classList.remove('active')
+        ? painterDom.classList.add('active')
+        : painterDom.classList.remove('active')
 
     // 标题
     titleOptionDom
-      .querySelectorAll('li')
-      .forEach(li => li.classList.remove('active'))
+        .querySelectorAll('li')
+        .forEach(li => li.classList.remove('active'))
     if (payload.level) {
       const curTitleDom = titleOptionDom.querySelector(`[data-level='${payload.level}']`)
       titleSelectDom.innerText = curTitleDom.innerText
@@ -1289,13 +1290,13 @@ onMounted(async () => {
 
     // 列表
     listOptionDom
-      .querySelectorAll('li')
-      .forEach(li => li.classList.remove('active'))
+        .querySelectorAll('li')
+        .forEach(li => li.classList.remove('active'))
     if (payload.listType) {
       listDom.classList.add('active')
       const listType = payload.listType
       const listStyle =
-        payload.listType === ListType.OL ? ListStyle.DECIMAL : payload.listType
+          payload.listType === ListType.OL ? ListStyle.DECIMAL : payload.listType
       const curListDom = listOptionDom.querySelector(`[data-list-type='${listType}'][data-list-style='${listStyle}']`)
       if (curListDom) {
         curListDom.classList.add('active')
@@ -1306,55 +1307,59 @@ onMounted(async () => {
   }
 
   //  页面: * / *
-  editor.listener.visiblePageNoListChange = function (payload) {
-    document.querySelector('.page-no-list').innerText = payload.map(i => i + 1).join('、')
-  }
-  editor.listener.pageSizeChange = function (payload) {
-    document.querySelector('.page-size').innerText = `${payload}`
-  }
-  editor.listener.intersectionPageNoChange = function (payload) {
-    document.querySelector('.page-no').innerText = `${payload + 1}`
-  }
+  if (window.location.href.includes("/editor")) {
+    editor.listener.visiblePageNoListChange = function (payload) {
+      document.querySelector('.page-no-list').innerText = payload.map(i => i + 1).join('、')
+    }
+    editor.listener.pageSizeChange = function (payload) {
+      document.querySelector('.page-size').innerText = `${payload}`
+    }
+    editor.listener.intersectionPageNoChange = function (payload) {
+      document.querySelector('.page-no').innerText = `${payload + 1}`
+    }
 
-  // - 100% +
-  editor.listener.pageScaleChange = function (payload) {
-    document.querySelector('.page-scale-percentage').innerText = `${Math.floor(payload * 10 * 10)}%`
-  }
+    // - 100% +
+    editor.listener.pageScaleChange = function (payload) {
+      document.querySelector('.page-scale-percentage').innerText = `${Math.floor(payload * 10 * 10)}%`
+    }
 
-  editor.listener.controlChange = function (payload) {
-    const disableMenusInControlContext = [
-      'table',
-      'hyperlink',
-      'separator',
-      'page-break'
-    ]
-    // 菜单操作权限
-    disableMenusInControlContext.forEach(menu => {
-      const menuDom = document.querySelector(
-        `.menu-item__${menu}`
+    editor.listener.controlChange = function (payload) {
+      const disableMenusInControlContext = [
+        'table',
+        'hyperlink',
+        'separator',
+        'page-break'
+      ]
+      // 菜单操作权限
+      disableMenusInControlContext.forEach(menu => {
+        const menuDom = document.querySelector(
+            `.menu-item__${menu}`
+        )
+        payload
+            ? menuDom.classList.add('disable')
+            : menuDom.classList.remove('disable')
+      })
+    }
+
+    editor.listener.pageModeChange = function (payload) {
+      const activeMode = pageModeOptionsDom.querySelector(
+          `[data-page-mode='${payload}']`
       )
-      payload
-        ? menuDom.classList.add('disable')
-        : menuDom.classList.remove('disable')
-    })
+      pageModeOptionsDom
+          .querySelectorAll('li')
+          .forEach(li => li.classList.remove('active'))
+      activeMode.classList.add('active')
+    }
+
   }
 
-  editor.listener.pageModeChange = function (payload) {
-    const activeMode = pageModeOptionsDom.querySelector(
-      `[data-page-mode='${payload}']`
-    )
-    pageModeOptionsDom
-      .querySelectorAll('li')
-      .forEach(li => li.classList.remove('active'))
-    activeMode.classList.add('active')
-  }
 
   //字数动态变化
   const handleContentChange = async function () {
     // 字数
     const wordCount = await editor.command.getWordCount()
     document.querySelector('.word-count').innerText = `${wordCount || 0
-      }`
+    }`
     // 目录
     if (isCatalogShow) {
       await nextTick(() => {
@@ -1363,7 +1368,7 @@ onMounted(async () => {
     }
   }
   editor.listener.contentChange = debounce(handleContentChange, 200)
-  handleContentChange()
+  await handleContentChange()
 
   editor.listener.saved = async function (payload) {
     console.log('elementList: ', payload)
@@ -1393,7 +1398,7 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.editor>div {
+.editor > div {
   margin: 80px auto;
   z-index: 10;
   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);

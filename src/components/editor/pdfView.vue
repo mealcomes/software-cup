@@ -11,9 +11,9 @@
   </div>
 </template>
 <script setup lang="ts">
-import { reactive, onMounted, computed } from "vue";
+import {computed, onMounted, reactive} from "vue";
 import VuePdfEmbed from "vue-pdf-embed";
-import { createLoadingTask } from "vue3-pdfjs";
+import {createLoadingTask} from "vue3-pdfjs";
 
 const props = defineProps({
   pdfUrl: {
