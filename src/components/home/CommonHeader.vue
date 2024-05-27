@@ -87,7 +87,8 @@ const newCommand = async (command) => {
         footer: []
       },
       author: 'Asuka',
-      file_size: 0
+      file_size: 0,
+      star_type: 0
     })
     console.log(res);
     if (res.status === 201) {

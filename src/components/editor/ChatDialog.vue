@@ -1,47 +1,51 @@
 <template>
   <div class="chatdialog" :class="{ 'hidden': !isDialogOpen }">
-    <!-- <el-tabs v-model="activeName" class="demo-tabs">
-      <el-tab-pane label="在线编辑" name="second">Config</el-tab-pane>
-    </el-tabs> -->
+    <!--     <el-tabs v-model="activeName" class="demo-tabs">-->
+    <!--      <el-tab-pane label="在线编辑" name="second">Config</el-tab-pane>-->
+    <!--    </el-tabs>-->
     <div style="margin: 20px 10px 10px;display: flex; justify-content: space-between; align-items: center;">
       <h4>多媒体素材中心</h4>
       <!-- <el-image src="https://paper-store-1311634119.cos.ap-nanjing.myqcloud.com/cover.jpg"></el-image> -->
       <el-upload style="display: flex; justify-content: space-between; align-items: center;"
-        :before-upload="beforeUpload" :show-file-list="false">
+                 :before-upload="beforeUpload" :show-file-list="false">
         <el-icon :size="20" style="margin-right: 10px; cursor: pointer;">
-          <Plus />
+          <Plus/>
         </el-icon>
       </el-upload>
-
     </div>
 
     <div class="divider" style="border: 1px solid #e6e6e6;"></div>
-    <el-dialog v-model="materialDialogVisible" :title="previewedMaterial?.material_name" :width="previewedMaterial?.material_type === 'audio'? '50%' : '70%'"
-      :z-index="9999">
-    >
+
+    <el-dialog v-model="materialDialogVisible"
+               :title="previewedMaterial?.material_name"
+               :width="previewedMaterial?.material_type === 'audio'? '50%' : '70%'"
+               :z-index="9999">
+      >
       <div style="display: flex; justify-content: center; align-items: center;">
         <div v-if="previewedMaterial?.material_type === 'audio'">
           <audio
-            :src="'https:' + previewedMaterial?.source_file_url" controls></audio>
+              :src="'https:' + previewedMaterial?.source_file_url" controls></audio>
           <el-descriptions :column="1" border class="margin-top" style="width: 70%; margin: 10px auto 0;">
             <el-descriptions-item>
               <template #label>
                 语音识别结果
               </template>
-              {{ previewedMaterial?.material_info.result }}
+              {{ previewedMaterial?.material_info }}
             </el-descriptions-item>
           </el-descriptions>
         </div>
 
-        <div v-if="previewedMaterial?.material_type === 'image'" style="display: flex; justify-content: space-between; align-items: center;">
-          <el-image 
-            :src="'https:' + previewedMaterial?.source_file_url" style="flex: 1;"></el-image>
+        <div v-if="previewedMaterial?.material_type === 'image'"
+             style="display: flex; justify-content: space-between; align-items: center;">
+          <el-image
+              :src="'https:' + previewedMaterial?.source_file_url" style="flex: 1;"></el-image>
           <div style="flex: 1;">
             <p v-for="text in previewedMaterial.material_info">{{ text.words }}</p>
           </div>
         </div>
 
-        <div v-if="previewedMaterial?.material_type === 'pdf_file'" style="display: flex; justify-content: space-between; align-items: center;">
+        <div v-if="previewedMaterial?.material_type === 'pdf_file'"
+             style="display: flex; justify-content: space-between; align-items: center;">
 
           <embed :src="'https:' + previewedMaterial?.source_file_url" style="flex: 1;"/>
 
@@ -52,44 +56,62 @@
 
         <div v-if="previewedMaterial?.material_type === 'video'">
           <video :src="previewedMaterial?.source_file_url" controls
-            style="width: 100%;"></video>
+                 style="width: 100%;"></video>
         </div>
 
       </div>
-
     </el-dialog>
+
     <ElCard v-for="material in materialList" :key="material.id" style="margin: 10px;" shadow="hover">
       <div style="display: flex; justify-content: space-between; align-items: center;">
-        <span>{{ material.material_name.length < 10 ? material.material_name : material.material_name.slice(0, 10)
-            + '...' }}</span>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <el-icon :size="15" style="margin-right: 10px; cursor: pointer;" class="material_icon"
-                @click="previewMaterial(material)">
-                <Menu />
-              </el-icon>
-              <el-icon :size="15" style="margin-right: 10px; cursor: pointer;" class="material_icon"
-                @click="deleteMaterial(store.fileId, material.id)">
-                <Delete />
-              </el-icon>
-            </div>
+        <span>{{
+            material.material_name.length < 10 ? material.material_name : material.material_name.slice(0, 10) + '...'
+          }}</span>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <el-icon :size="15" style="margin-right: 10px; cursor: pointer;" class="material_icon"
+                   @click="previewMaterial(material)">
+            <Menu/>
+          </el-icon>
+          <el-icon :size="15" style="margin-right: 10px; cursor: pointer;" class="material_icon"
+                   @click="deleteMaterial(store.fileId, material.id)">
+            <Delete/>
+          </el-icon>
+        </div>
       </div>
     </ElCard>
     <!-- <el-divider style=""></el-divider> -->
-    <beautiful-chat :participants="participants" :titleImageUrl="titleImageUrl" :onMessageWasSent="onMessageWasSent"
-      :messageList="messageList" :newMessagesCount="newMessagesCount" :isOpen="isChatOpen" :open="openChat"
-      :close="closeChat" :showEdition="true" :showLauncher="true" :deletionConfirmation="true" :colors="colors"
-      :alwaysScrollToBottom="alwaysScrollToBottom" :disableUserListToggle="false" :messageStyling="messageStyling"
-      @onType="handleOnType" @edit="editMessage" />
+
+    <beautiful-chat :participants="participants"
+                    :titleImageUrl="titleImageUrl"
+                    :onMessageWasSent="onMessageWasSent"
+                    :messageList="messageList"
+                    :newMessagesCount="newMessagesCount"
+                    :isOpen="isChatOpen" :open="openChat"
+                    :close="closeChat"
+                    :showEdition="true"
+                    :showDeletion="true"
+                    :showLauncher="true"
+                    :deletionConfirmation="true"
+                    :colors="colors"
+                    :alwaysScrollToBottom="alwaysScrollToBottom"
+                    :disableUserListToggle="true"
+                    :messageStyling="messageStyling"
+                    @onType="handleOnType"
+                    @edit="editMessage">
+      <template v-slot:header>
+        {{ participants.map(m => m.name).join(' & ') }}
+      </template>
+    </beautiful-chat>
   </div>
 </template>
 
 <script setup>
 import {Delete, Menu, Plus} from "@element-plus/icons-vue";
 import {ElCard, ElDialog, ElMessage, ElMessageBox} from "element-plus";
-import {onMounted, ref} from "vue";
+import {onMounted, ref, watch} from "vue";
 import {afterCr, asr, ocr} from "@/utils/api4ai.js";
 import axios from "axios";
-import {store} from "@/store/index.js";
+import {editorInstance, store} from "@/store/index.js";
 
 
 const chatInput = ref("");
@@ -98,160 +120,15 @@ const materialList = ref([])
 const materialDialogVisible = ref(false)
 const previewedMaterial = ref(null)
 
-const previewMaterial = (material) => {
-  console.log(material);
-  materialDialogVisible.value = true
-  previewedMaterial.value = material
-}
-
-
-onMounted(async () => {
-  const chatty = document.querySelector('.sc-user-input--text')
-  chatty.setAttribute('placeholder', '请输入您的问题')
-  const materials = await axios.get(`/api/material?file_id=${store.fileId}`)
-  console.log(materials);
-  materialList.value = materials.data
-})
-
-const submitChat = () => {
-  console.log(chatInput.value);
-};
-
-const fileMaterialUpload = (command) => {
-  if (command === 'file') {
-
-  } else if (command === 'image') {
-
-  } else if (command === 'audio') {
-
-  } else if (command === 'video') {
-
-  }
-}
-
-const beforeUpload = async (file) => {
-  // file is material
-  ElMessage.info('正在上传中...')
-  // 判断文件是什么类型
-  if (file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/gif') {
-    // 图片
-    const result = await ocr(file, 'image')
-    if(result.status === 200 && result.data.status === 'ok') {
-      await afterCr(file, result, materialList, 'image')
-    }
-    else{
-      ElMessage.error('上传失败！')
-    }
-  }
-  else if (file.type === 'audio/mp3' || file.type === 'audio/wav' || file.type === 'audio/ogg' || file.type === 'audio/mpeg') {
-    // 判断音频时长
-    const audio = new Audio(URL.createObjectURL(file));
-    audio.addEventListener('loadedmetadata', async () => {
-      const duration = audio.duration;
-      if (duration > 50) {
-        ElMessage.error('音频时长不能超过50秒');
-      } else {
-        const result = await asr(file)
-        if(result.status === 200 && result.data.status === 'ok'){
-          await afterCr(file, result, materialList, 'audio')
-        }
-        else{
-          ElMessage.error('上传失败')
-        }
-      }
-    });
-  }
-  else if (file.type === 'video/mp4' || file.type === 'video/avi' || file.type === 'video/flv') {
-    // 视频
-    console.log('视频');
-  }
-  else if (file.type === 'application/pdf') {
-    // pdf文件
-    const result = await ocr(file, 'pdf_file')
-    if(result.status === 200 && result.data.status === 'ok') {
-      await afterCr(file, result, materialList, 'pdf_file')
-    }
-    else{
-      ElMessage.error('上传失败')
-    }
-  }
-
-}
-
-async function deleteMaterial(file_id, id){
-  ElMessageBox.confirm(
-      '确定删除该素材？',
-      'Warning',
-      {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-      }
-  )
-      .then(async () => {
-        const msg = ElMessage({
-          showClose: true,
-          duration: 0,
-          message: `删除中，请稍后...`
-        })
-        try {
-          const deleteFileInfo = await axios.post('/api/delete', {
-            id: id
-          })
-          if(deleteFileInfo.status === 200 && deleteFileInfo.data.status === 'ok'){
-            const res = await axios.delete(`/api/material?file_id=${file_id}&id=${id}`)
-
-            msg.close()
-            if(res.status === 200 && res.data.status === 'ok'){
-              ElMessage.success('删除成功')
-            }
-            else {
-              ElMessage.error('删除失败')
-            }
-            const materials = await axios.get('/api/material', {
-              params: {
-                file_id: store.fileId
-              }
-            })
-            materialList.value = materials.data
-          }
-          else{
-            msg.close()
-            ElMessage.error('删除失败')
-          }
-
-        } catch (e) {
-          console.log(e);
-          msg.close()
-          ElMessage.error('删除失败')
-        }
-      })
-      .catch(() => {
-        ElMessage({
-          type: 'info',
-          message: '取消删除！',
-        })
-      })
-}
-
-const participants = [
-  {
-    id: "user",
-    name: "User",
-    imageUrl: "https://avatars3.githubusercontent.com/u/1915989?s=230&v=4",
-  },
-  {
-    id: "chatbot",
-    name: "Chatbot",
-    imageUrl: "https://avatars3.githubusercontent.com/u/1915989?s=230&v=4",
-  },
-];
-
+const isResponding = ref(false)
+const messagesRequest = ref([]);
+const newMessagesCount = ref(0);
+const isChatOpen = ref(false);
+const isDialogOpen = ref(true);
+const showTypingIndicator = ref("");
+const alwaysScrollToBottom = ref(true);
+const messageStyling = ref(true);
 const titleImageUrl = "https://a.slack-edge.com/66f9/img/avatars-teams/ava_0001-34.png";
-
-const onMessageWasSent = (message) =>
-  (messageList.value = [...messageList.value, message]);
-
 const messageList = ref([
   {
     type: "text",
@@ -262,18 +139,18 @@ const messageList = ref([
     },
   },
 ]);
-
-const newMessagesCount = ref(0);
-const isChatOpen = ref(false);
-const isDialogOpen = ref(true);
-const showTypingIndicator = ref("");
-const alwaysScrollToBottom = ref(false);
-const messageStyling = ref(true);
-
-const closeDialog = () => {
-  isDialogOpen.value = false;
-}
-
+const participants = [
+  {
+    id: "user",
+    name: "User",
+    imageUrl: "https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
+  },
+  {
+    id: "chatbot",
+    name: "Chatbot",
+    imageUrl: "https://avatars3.githubusercontent.com/u/1915989?s=230&v=4",
+  },
+];
 const colors = ref({
   header: {
     bg: "#4e8cff",
@@ -299,11 +176,227 @@ const colors = ref({
   },
 });
 
+const previewMaterial = (material) => {
+  console.log(material);
+  materialDialogVisible.value = true
+  previewedMaterial.value = material
+}
+
+onMounted(async () => {
+  const chatty = document.querySelector('.sc-user-input--text')
+  chatty.setAttribute('placeholder', '请输入您的问题')
+  const materials = await axios.get(`/api/material?file_id=${store.fileId}`)
+  console.log(materials);
+  materialList.value = materials.data
+
+  const textArea = document.querySelector('.ce-page-container')
+  textArea.addEventListener('mouseup', function () {
+    let content = editorInstance.value.command.getRangeText()
+    if (content !== '') {
+      let input = document.querySelector('.sc-user-input--text')
+      input.innerHTML = content
+    }
+  });
+})
+
+const submitChat = () => {
+  console.log(chatInput.value);
+};
+
+const beforeUpload = async (file) => {
+  // file is material
+  ElMessage.info('正在上传中...')
+  // 判断文件是什么类型
+  if (file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/gif') {
+    // 图片
+    const result = await ocr(file, 'image')
+    if (result.status === 200 && result.data.status === 'ok') {
+      await afterCr(file, result, materialList, 'image')
+    } else {
+      ElMessage.error('上传失败！')
+    }
+  } else if (file.type === 'audio/mp3' || file.type === 'audio/wav' || file.type === 'audio/ogg' || file.type === 'audio/mpeg') {
+    // 判断音频时长
+    const audio = new Audio(URL.createObjectURL(file));
+    audio.addEventListener('loadedmetadata', async () => {
+      const duration = audio.duration;
+      if (duration > 50) {
+        ElMessage.error('音频时长不能超过50秒');
+      } else {
+        const result = await asr(file)
+        if (result.status === 200 && result.data.status === 'ok') {
+          await afterCr(file, result, materialList, 'audio')
+        } else {
+          ElMessage.error('上传失败')
+        }
+      }
+    });
+  } else if (file.type === 'video/mp4' || file.type === 'video/avi' || file.type === 'video/flv') {
+    // 视频
+    console.log('视频');
+  } else if (file.type === 'application/pdf') {
+    // pdf文件
+    const result = await ocr(file, 'pdf_file')
+    if (result.status === 200 && result.data.status === 'ok') {
+      await afterCr(file, result, materialList, 'pdf_file')
+    } else {
+      ElMessage.error('上传失败')
+    }
+  }
+
+}
+
+async function deleteMaterial(file_id, id) {
+  ElMessageBox.confirm(
+      '确定删除该素材？',
+      'Warning',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }
+  )
+      .then(async () => {
+        const msg = ElMessage({
+          showClose: true,
+          duration: 0,
+          message: `删除中，请稍后...`
+        })
+        try {
+          const deleteFileInfo = await axios.post('/api/delete', {
+            id: id
+          })
+          if (deleteFileInfo.status === 200 && deleteFileInfo.data.status === 'ok') {
+            const res = await axios.delete(`/api/material?file_id=${file_id}&id=${id}`)
+
+            msg.close()
+            if (res.status === 200 && res.data.status === 'ok') {
+              ElMessage.success('删除成功')
+            } else {
+              ElMessage.error('删除失败')
+            }
+            const materials = await axios.get('/api/material', {
+              params: {
+                file_id: store.fileId
+              }
+            })
+            materialList.value = materials.data
+          } else {
+            msg.close()
+            ElMessage.error('删除失败')
+          }
+
+        } catch (e) {
+          console.log(e);
+          msg.close()
+          ElMessage.error('删除失败')
+        }
+      })
+      .catch(() => {
+        ElMessage({
+          type: 'info',
+          message: '取消删除！',
+        })
+      })
+}
+
+
+const onMessageWasSent = async (message) => {
+  if (!isResponding.value) {
+    messageList.value = [...messageList.value, message]
+    messagesRequest.value.push({'role': 'user', 'content': message.data.text})
+  }
+}
+
+//监听消息列表
+watch(messageList, async (newList, oldValue) => {
+  let message = newList[newList.length - 1]
+  if (message.author === 'Chatbot')
+    return;
+  isResponding.value = true;
+  // let tmp = document.getElementsByClassName('sc-user-input');
+  // let form = tmp[0]
+  // if (!form) {
+  //   console.error('表单未找到');
+  //   return;
+  // }
+  // // 遍历表单内的所有元素
+  // for (let i = 0; i < form.elements.length; i++) {
+  //   // 设置每个元素的disabled属性为true
+  //   console.log(i, form.elements[i].disabled)
+  //   form.elements[i].disabled = true;
+  // }
+  // let input = document.getElementsByClassName('sc-user-input')
+  // console.log(input[0])
+  // console.log(input[0].disabled)
+  // console.log('前：', input[0].disabled)
+  // input[0].disabled = true
+  // console.log('后：', input[0].disabled)
+  try {
+    let response = await fetch('/api4ai/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        content: messagesRequest.value
+      })
+    });
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const reader = response.body.getReader();
+    const textDecoder = new TextDecoder();
+    let result = true;
+    let output = ''
+    let flag = false
+    while (result) {
+      const {done, value} = await reader.read();
+
+      if (done) {
+        result = false;
+        break;
+      }
+      const chunkText = textDecoder.decode(value);
+      output += chunkText;
+      if (!flag) {
+        messageList.value.push({
+          type: "text",
+          author: `Chatbot`,
+          authorIconUrl: "https://avatars3.githubusercontent.com/u/1915989?s=230&v=4",
+          data: {
+            text: chunkText
+          },
+        },)
+        flag = !flag
+      } else {
+        messageList.value[messageList.value.length - 1].data.text += chunkText
+      }
+    }
+    if (!isChatOpen.value)
+      newMessagesCount.value += 1
+    messagesRequest.value.push({'role': 'assistant', 'content': output})
+  } catch (e) {
+    messageList.value.push({
+      type: "text",
+      author: `Chatbot`,
+      authorIconUrl: "https://avatars3.githubusercontent.com/u/1915989?s=230&v=4",
+      data: {
+        text: "服务器错误，请稍后重试!"
+      },
+    },)
+    messagesRequest.value.splice(0)
+  } finally {
+    isResponding.value = false
+    // input[0].disabled = false
+  }
+})
+
 const sentMessage = (text) => {
   if (text.length > 0) {
     newMessagesCount.value = isChatOpen.value
-      ? newMessagesCount.value
-      : newMessagesCount.value + 1;
+        ? newMessagesCount.value
+        : newMessagesCount.value + 1;
     onMessageWasSent({
       author: `me`,
       type: "text",
@@ -315,7 +408,6 @@ const sentMessage = (text) => {
 };
 
 const openChat = () => {
-  // called when the user clicks on the fab button to open the chat
   isChatOpen.value = true;
   newMessagesCount.value = 0;
 };
@@ -324,7 +416,6 @@ const handleOnType = () => {
 };
 
 const closeChat = () => {
-  // called when the user clicks on the button to close the chat
   isChatOpen.value = false;
 };
 
@@ -333,6 +424,7 @@ const toggleChat = () => {
 };
 
 const editMessage = (message) => {
+  console.log('editMessage')
   const m = messageList.value.find((m) => m.id === message.id);
   m.isEdited = true;
   m.data.text = message.data.text;

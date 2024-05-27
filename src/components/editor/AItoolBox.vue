@@ -77,40 +77,6 @@ const handleCommand = async (command) => {
       }
     } else if (command === 'continue') {
       console.log('continue');
-
-      // // 创建一个表单元素
-      // const form = document.createElement('form');
-      // form.id = 'continue-rules'; // 设置表单的 ID
-      //
-      // // 创建一个输入框
-      // const input = document.createElement('input');
-      // input.type = 'text';
-      // input.placeholder = '请输入续写要求';
-      // input.name = 'continue-rules'; // 设置表单项的名称
-      //
-      // // 创建一个提交按钮
-      // const submitButton = document.createElement('button');
-      // submitButton.type = 'submit';
-      // submitButton.textContent = '提交';
-      //
-      // // 将输入框和按钮添加到表单中
-      // form.appendChild(input);
-      // form.appendChild(submitButton);
-      //
-      // // 将表单添加到页面中
-      // const app = document.getElementById('app');
-      // app.appendChild(form);
-      //
-      // // 添加表单提交事件处理程序
-      // form.addEventListener('submit', (event) => {
-      //   event.preventDefault(); // 阻止默认提交行为
-      //   const formData = new FormData(form); // 获取表单数据
-      //   console.log('活动名称:', formData.get('activityName'));
-      //   // 在这里可以执行其他逻辑，比如发送表单数据到服务器
-      // });
-      //
-      // return
-
       const toContinueText = editorInstance.value.command.getRangeText()
       result = await axios.post('/api4ai/continuation', {
         content: toContinueText

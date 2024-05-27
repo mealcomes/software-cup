@@ -21,6 +21,7 @@
     "markmap-render": "^0.17.0",
     "markmap-view": "^0.17.0",
     "pdfjs-dist": "^4.2.67",
+    "socket.io-client": "^4.7.5",
     "v-dropdown": "^3.0.0",
     "vue": "^3.4.21",
     "vue-pdf": "^4.3.0",
