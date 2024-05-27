@@ -28,7 +28,7 @@ if (fileType === 'doc' || fileType === 'docx') {
 } else if (fileType === 'ppt' || fileType === 'pptx') {
     fileClass.value = '#icon-ppt'
 } else if (fileType === 'xls' || fileType === 'xlsx') {
-    fileClass.value = '#icon-excel-'
+    fileClass.value = '#icon-excel'
 } else if (fileType === 'pdf') {
     fileClass.value = '#icon-PDF'
 } else if (fileType === 'md') {

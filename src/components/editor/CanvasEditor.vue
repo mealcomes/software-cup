@@ -73,7 +73,6 @@ onMounted(async () => {
   const data = await editor.command.getValue()
   console.log(data);
 
-
   // 菜单弹窗销毁
   window.addEventListener(
       'click',
@@ -1371,21 +1370,38 @@ onMounted(async () => {
   await handleContentChange()
 
   editor.listener.saved = async function (payload) {
-    console.log('elementList: ', payload)
     // console.log(editor.command.getRange());
     // editor.command.executeAppendElementList([
     //   {
     //     value: 'abc'
     //   }
     // ])
-    const res = await axios.put(`/api/files/${store.fileId}`, {
-      content: payload.data
-    })
-    console.log(res);
-    if (res.status === 200) {
-      ElMessage.success('保存成功')
-    } else {
+    try{
+      const res = await axios.put(`/api/files/${store.fileId}`, {
+        content: payload.data
+      })
+      if (res.status === 200 && res.data.status === 'ok') {
+        ElMessage.success('保存成功')
+      } else {
+        ElMessage.error('保存失败')
+      }
+    }catch (e){
+      console.log(e.message)
       ElMessage.error('保存失败')
+    }
+  }
+
+  // 监听编辑器内容变化
+  editor.listener.contentChange = async function (payload) {
+    // 字数
+    const wordCount = await editor.command.getWordCount()
+    document.querySelector('.word-count').innerText = `${wordCount || 0
+    }`
+    // 目录
+    if (isCatalogShow) {
+      await nextTick(() => {
+        updateCatalog()
+      })
     }
   }
 

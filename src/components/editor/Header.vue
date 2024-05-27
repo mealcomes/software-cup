@@ -18,18 +18,25 @@
 import {Back, Share} from '@element-plus/icons-vue'
 import {useRouter} from 'vue-router';
 import {editorInstance, store} from '@/store/index.js';
+import {onBeforeUnmount, onMounted} from "vue";
 
 const router = useRouter()
 const goback = () => {
+  router.go(-1)
+}
+
+onBeforeUnmount(async () => {
+  if (editorInstance.value) {
     editorInstance.value.listener.visiblePageNoListChange = null
     editorInstance.value.listener.pageSizeChange = null
     editorInstance.value.listener.intersectionPageNoChange = null
     editorInstance.value.listener.pageScaleChange = null
     editorInstance.value.listener.controlChange = null
     editorInstance.value.listener.pageModeChange = null
+    editorInstance.value = null
+  }
+})
 
-  router.go(-1)
-}
 </script>
 
 <style scoped>
