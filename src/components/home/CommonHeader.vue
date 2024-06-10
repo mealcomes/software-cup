@@ -19,8 +19,8 @@
 
       </el-dropdown>
 
-      <el-upload :show-file-list="false" :on-success="handleSuccess" :before-upload="beforeUpload"
-        :headers="headers" :limit="1" v-model:file-list="uploadFileList" accept=".xls,.xlsx,.doc,.docx,.ppt,.pptx,.md">
+      <el-upload :show-file-list="false" :on-success="handleSuccess" :before-upload="beforeUpload" :headers="headers"
+        :limit="1" v-model:file-list="uploadFileList" accept=".xls,.xlsx,.doc,.docx,.ppt,.pptx,.md">
         <el-button :icon="Plus" type="success">
           导入
         </el-button>
@@ -30,15 +30,17 @@
       </el-button>
       <el-dialog v-model="templateVisible" title="模板库" width="50%" style="height: 70%;">
         <el-button type="primary" style="margin-bottom: 10px;">新建模板</el-button>
-        <div style="display: flex; justify-content: space-between;">
-          <el-card style="width: 30% " shadow="hover">
-            <file-name filename="123.xls"></file-name>
-          </el-card>
-          <el-card style="width: 30% " shadow="hover">
-            <file-name filename="123.docx"></file-name>
-          </el-card>
-          <el-card style="width: 30% " shadow="hover">
-            <file-name filename="123.ppt"></file-name>
+        <div>
+          <el-card v-for="(file, idx) in fileList" style="width: 100%; margin-bottom: 10px;" :key="idx" shadow="never">
+            <div style="display: flex; justify-content: space-between; align-items: center">
+              <file-name :filename="file.name"></file-name>
+              <div>
+                <el-button text type="primary" @click="beginWithTemplate(idx)">从此模板开始</el-button>
+                <el-icon>
+                  <Delete />
+                </el-icon>
+              </div>
+            </div>
           </el-card>
         </div>
       </el-dialog>
@@ -67,15 +69,44 @@
 </template>
 
 <script setup>
-import {Money, Plus, Present} from '@element-plus/icons-vue'
-import {ref} from 'vue'
+import { Money, Plus, Present, Delete } from '@element-plus/icons-vue'
+import { ref, onMounted, watch } from 'vue'
 import FileName from './FileIcon.vue'
-import {useRouter} from "vue-router";
-import {store} from '@/store/index.js';
+import { useRouter } from "vue-router";
+import { store } from '@/store/index.js';
 import mammoth from 'mammoth';
 import axios from 'axios';
-import {ElMessage} from 'element-plus';
+import { ElMessage } from 'element-plus';
 import * as Data from "ant-design-vue/es/_util/hooks/_vueuse/is.js";
+// import { store } from '@/store/index.js';
+
+const beginWithTemplate = async (idx) => {
+  const res = await axios.post('/api/files', {
+    name: fileList.value[idx].name.split('.')[0] + '_副本.' + fileList.value[idx].name.split('.')[1],
+    content: fileList.value[idx].content,
+    author: 'Asuka',
+    file_size: fileList.value[idx].file_size,
+    star_type: 0
+  })
+  if (res.status === 201) {
+    ElMessage({
+      message: '从模板复制成功',
+      type: 'success',
+    })
+    store.fileId = res.data.id
+    store.fileName = res.data.name
+    store.fileContent = fileList.value[idx].content
+    store.editType = 'reditFile'
+    await router.push('/editor')
+  } else {
+    ElMessage({
+      message: '从模板复制失败',
+      type: 'error',
+    })
+  }
+  router.push('/editor')
+}
+
 
 const newCommand = async (command) => {
   if (command === 'doc') {
@@ -83,7 +114,7 @@ const newCommand = async (command) => {
       name: '未命名文件-' + Data.now().toString() + '.docx',
       content: {
         header: [],
-        main: [{value: ''}],
+        main: [{ value: '' }],
         footer: []
       },
       author: 'Asuka',
@@ -106,14 +137,24 @@ const newCommand = async (command) => {
         type: 'error',
       })
     }
-    
+
   }
 }
+
+onMounted(() => {
+  console.log(store.globalFileList);
+  fileList.value = store.globalFileList.filter(file => file.is_template === 1)
+})
+
+watch(() => store.globalFileList, (newVal) => {
+  fileList.value = newVal.filter(file => file.is_template === 1)
+})
 
 const router = useRouter();
 
 const templateVisible = ref(false)
 const uploadFileList = ref([])
+const fileList = ref([])
 const headers = ref({
   Authorization: 'Bearer ' + localStorage.getItem('token')
 })

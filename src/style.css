@@ -41,7 +41,7 @@ body {
 }
 
 body::-webkit-scrollbar {
-    display: flex;
+    display: none;
 }
 
 ul {

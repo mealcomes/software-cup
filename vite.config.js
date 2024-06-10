@@ -1,9 +1,12 @@
 import {fileURLToPath, URL} from 'node:url'
+import topLevelAwait from 'vite-plugin-top-level-await'
 
 import {defineConfig} from 'vite'
 import vue from '@vitejs/plugin-vue'
 import Components from 'unplugin-vue-components/vite';
 import {AntDesignVueResolver} from 'unplugin-vue-components/resolvers';
+
+
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -27,7 +30,7 @@ export default defineConfig({
     open: true,
     proxy: {
       '/api4ai': {
-        target: 'http://8.148.7.42:86',
+        target: 'http://127.0.0.1:86',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api4ai/, '')
       },
@@ -38,5 +41,8 @@ export default defineConfig({
       },
       
     }
+  },
+  define: {
+    'process.env': process.env
   }
 })

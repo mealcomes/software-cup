@@ -43,8 +43,16 @@ export const afterCr = async (file, result, materialList, type) => {
                     }
                 })
                 materialList.value = materials.data
-            })
+                console.log(response);
+                await axios.post('/api4ai/chroma', {
+                    file_id: store.fileId,
+                    material_id: response.data.material_id,
+                    material_info: result.data.message,
+                    material_type: type
+                })
         ElMessage.success('上传成功')
+
+            })
     } else {
         ElMessage.error('上传失败')
     }

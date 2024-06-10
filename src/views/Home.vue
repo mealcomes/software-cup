@@ -13,6 +13,7 @@
 <script setup>
 import CommonHeader from "../components/home/CommonHeader.vue";
 import CommonAside from "../components/home/CommonAside.vue";
+import Reveal from "reveal.js";
 
 </script>
 

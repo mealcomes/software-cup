@@ -4,27 +4,30 @@
     <!--      <el-tab-pane label="在线编辑" name="second">Config</el-tab-pane>-->
     <!--    </el-tabs>-->
     <div style="margin: 20px 10px 10px;display: flex; justify-content: space-between; align-items: center;">
-      <h4>多媒体素材中心</h4>
+      <div style="display: flex; align-items: center; margin-right: 10px;">
+        <el-icon ><Orange /></el-icon>
+      <h4 style="margin-left: 10px;"> 多媒体素材中心</h4>
+
+      </div>
+      
       <!-- <el-image src="https://paper-store-1311634119.cos.ap-nanjing.myqcloud.com/cover.jpg"></el-image> -->
       <el-upload style="display: flex; justify-content: space-between; align-items: center;"
-                 :before-upload="beforeUpload" :show-file-list="false">
+        :before-upload="beforeUpload" :show-file-list="false">
         <el-icon :size="20" style="margin-right: 10px; cursor: pointer;">
-          <Plus/>
+          <CirclePlus />
         </el-icon>
       </el-upload>
     </div>
 
-    <div class="divider" style="border: 1px solid #e6e6e6;"></div>
+    <!-- <div class="divider" style="border: 0.1px solid #e6e6e6;"></div> -->
+    <el-divider style="margin-top: 5px; margin-bottom: 10px;"></el-divider>
 
-    <el-dialog v-model="materialDialogVisible"
-               :title="previewedMaterial?.material_name"
-               :width="previewedMaterial?.material_type === 'audio'? '50%' : '70%'"
-               :z-index="9999">
-      >
+    <el-dialog v-model="materialDialogVisible" :title="previewedMaterial?.material_name"
+      :width="previewedMaterial?.material_type === 'audio' ? '50%' : '70%'" :z-index="9999">
+
       <div style="display: flex; justify-content: center; align-items: center;">
         <div v-if="previewedMaterial?.material_type === 'audio'">
-          <audio
-              :src="'https:' + previewedMaterial?.source_file_url" controls></audio>
+          <audio :src="'https:' + previewedMaterial?.source_file_url" controls></audio>
           <el-descriptions :column="1" border class="margin-top" style="width: 70%; margin: 10px auto 0;">
             <el-descriptions-item>
               <template #label>
@@ -36,89 +39,128 @@
         </div>
 
         <div v-if="previewedMaterial?.material_type === 'image'"
-             style="display: flex; justify-content: space-between; align-items: center;">
-          <el-image
-              :src="'https:' + previewedMaterial?.source_file_url" style="flex: 1;"></el-image>
+          style="display: flex; justify-content: space-between; align-items: center;">
+          <el-image :src="'https:' + previewedMaterial?.source_file_url" style="flex: 1;"></el-image>
           <div style="flex: 1;">
             <p v-for="text in previewedMaterial.material_info">{{ text.words }}</p>
           </div>
         </div>
 
         <div v-if="previewedMaterial?.material_type === 'pdf_file'"
-             style="display: flex; justify-content: space-between; align-items: center;">
+          style="display: flex; justify-content: space-between; align-items: center;">
 
-          <embed :src="'https:' + previewedMaterial?.source_file_url" style="flex: 1;"/>
+          <!-- <embed :src="'https:' + previewedMaterial?.source_file_url" style="flex: 1;"/> -->
 
-          <div style="flex: 1;">
+          <!-- <div style="flex: 1;">
             <p v-for="text in previewedMaterial.material_info">{{ text.words }}</p>
-          </div>
+          </div> -->
+          <VuePdfEmbed annotation-layer text-layer :width="700" :source="'https:' + previewedMaterial?.source_file_url">
+          </VuePdfEmbed>
         </div>
 
         <div v-if="previewedMaterial?.material_type === 'video'">
-          <video :src="previewedMaterial?.source_file_url" controls
-                 style="width: 100%;"></video>
+          <video :src="previewedMaterial?.source_file_url" controls style="width: 100%;"></video>
         </div>
 
       </div>
     </el-dialog>
 
-    <ElCard v-for="material in materialList" :key="material.id" style="margin: 10px;" shadow="hover">
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-        <span>{{
-            material.material_name.length < 10 ? material.material_name : material.material_name.slice(0, 10) + '...'
-          }}</span>
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <el-icon :size="15" style="margin-right: 10px; cursor: pointer;" class="material_icon"
-                   @click="previewMaterial(material)">
-            <Menu/>
-          </el-icon>
-          <el-icon :size="15" style="margin-right: 10px; cursor: pointer;" class="material_icon"
-                   @click="deleteMaterial(store.fileId, material.id)">
-            <Delete/>
-          </el-icon>
-        </div>
-      </div>
-    </ElCard>
-    <!-- <el-divider style=""></el-divider> -->
+    <el-checkbox-group v-model="pickedMaterialList" @change="pickedMtChange">
+      <ElCard v-for="(material, index) in materialList" :key="material.id" style="margin: 10px; margin-top: 0;"
+        shadow="hover">
 
-    <beautiful-chat :participants="participants"
-                    :titleImageUrl="titleImageUrl"
-                    :onMessageWasSent="onMessageWasSent"
-                    :messageList="messageList"
-                    :newMessagesCount="newMessagesCount"
-                    :isOpen="isChatOpen" :open="openChat"
-                    :close="closeChat"
-                    :showEdition="true"
-                    :showDeletion="true"
-                    :showLauncher="true"
-                    :deletionConfirmation="true"
-                    :colors="colors"
-                    :alwaysScrollToBottom="alwaysScrollToBottom"
-                    :disableUserListToggle="true"
-                    :messageStyling="messageStyling"
-                    @onType="handleOnType"
-                    @edit="editMessage">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <el-checkbox
+            :label="material.material_name.length < 10 ? material.material_name : material.material_name.slice(0, 10) + '...'"
+            :value="index"></el-checkbox>
+          <!-- <span>{{
+            material.material_name.length < 10 ? material.material_name : material.material_name.slice(0, 10) + '...'
+          }}</span> -->
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <el-icon :size="15" style="margin-right: 10px; cursor: pointer;" class="material_icon">
+              <Document v-if="material.material_type === 'pdf_file'" />
+              <VideoCamera v-if="material.material_type === 'video'" />
+              <Headset v-if="material.material_type === 'audio'" />
+              <Picture v-if="material.material_type === 'image'" />
+            </el-icon>
+            <el-icon :size="15" style="margin-right: 10px; cursor: pointer;" class="material_icon"
+              @click="previewMaterial(material)">
+              <Menu />
+            </el-icon>
+            <el-icon :size="15" style="margin-right: 10px; cursor: pointer;" class="material_icon"
+              @click="deleteMaterial(store.fileId, material.id)">
+              <Delete />
+            </el-icon>
+          </div>
+        </div>
+      </ElCard>
+      <!-- <el-divider style=""></el-divider> -->
+    </el-checkbox-group>
+
+    <beautiful-chat :participants="participants" :titleImageUrl="titleImageUrl" :onMessageWasSent="onMessageWasSent"
+      :messageList="messageList" :newMessagesCount="newMessagesCount" :isOpen="isChatOpen" :open="openChat"
+      :close="closeChat" :showEdition="true" :showDeletion="true" :showLauncher="true" :showFile="true"
+      :deletionConfirmation="true" :colors="colors" :alwaysScrollToBottom="alwaysScrollToBottom"
+      :disableUserListToggle="true" :messageStyling="messageStyling" @onType="handleOnType" @edit="editMessage">
       <template v-slot:header>
-        {{ participants.map(m => m.name).join(' & ') }}
+        AI小助手
       </template>
     </beautiful-chat>
   </div>
 </template>
 
 <script setup>
-import {Delete, Menu, Plus} from "@element-plus/icons-vue";
-import {ElCard, ElDialog, ElMessage, ElMessageBox} from "element-plus";
-import {onMounted, ref, watch} from "vue";
-import {afterCr, asr, ocr} from "@/utils/api4ai.js";
+import { Delete, Menu, Plus, VideoCamera, Headset, Picture, Document, Orange, CirclePlus} from "@element-plus/icons-vue";
+import { ElCard, ElDialog, ElMessage, ElMessageBox } from "element-plus";
+import { onMounted, ref, watch } from "vue";
+import { afterCr, asr, ocr } from "@/utils/api4ai.js";
 import axios from "axios";
-import {editorInstance, store} from "@/store/index.js";
+import { editorInstance, store } from "@/store/index.js";
+import VuePdfEmbed from "vue-pdf-embed";
+import 'vue-pdf-embed/dist/style/index.css'
 
+// optional styles
+import 'vue-pdf-embed/dist/style/annotationLayer.css'
+import 'vue-pdf-embed/dist/style/textLayer.css'
+
+const page = ref(1)
 
 const chatInput = ref("");
+const vecstorePrompt = ref("")
 const activeName = ref("ai");
 const materialList = ref([])
 const materialDialogVisible = ref(false)
 const previewedMaterial = ref(null)
+const pickedMaterialList = ref([])
+const pickedMtChange = async (val) => {
+  // console.log(val.map(item => materialList.value[item]));
+  const mtNameList = val.map(item => materialList.value[item].material_name).join(", ");
+  const ids = val.map(item => materialList.value[item].id).join(',')
+  console.log(pickedMaterialList.value);
+  // const res = await axios.get('/api4ai/chroma', {
+  //   params: {
+  //     file_id: store.fileId,
+  //     material_id: ids,
+  //     text: editorInstance.value.command.getRangeText()
+  //   }
+  // })
+  // console.log(res);
+  // vecstorePrompt.value = res.data.documents.join('\n')
+  messageList.value = messageList.value.map((item, idx) => {
+    if (idx === 0) {
+      return {
+        type: "text",
+        author: `Chatbot`,
+        authorIconUrl: "https://avatars3.githubusercontent.com/u/1915989?s=230&v=4",
+        data: {
+          text: `已选择${mtNameList}`,
+        }
+      }
+    }
+    else return item
+  })
+}
+
 
 const isResponding = ref(false)
 const messagesRequest = ref([]);
@@ -136,6 +178,10 @@ const messageList = ref([
     authorIconUrl: "https://avatars3.githubusercontent.com/u/1915989?s=230&v=4",
     data: {
       text: `Hello! How can I help you?`,
+      file: {
+        name: '111',
+        url: "https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+      }
     },
   },
 ]);
@@ -153,17 +199,17 @@ const participants = [
 ];
 const colors = ref({
   header: {
-    bg: "#4e8cff",
+    bg: "rgb(64,158,255)",
     text: "#ffffff",
   },
   launcher: {
-    bg: "#4e8cff",
+    bg: "rgb(64,158,255)",
   },
   messageList: {
     bg: "#ffffff",
   },
   sentMessage: {
-    bg: "#4e8cff",
+    bg: "rgb(64,158,255)",
     text: "#ffffff",
   },
   receivedMessage: {
@@ -248,63 +294,63 @@ const beforeUpload = async (file) => {
 
 async function deleteMaterial(file_id, id) {
   ElMessageBox.confirm(
-      '确定删除该素材？',
-      'Warning',
-      {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-      }
+    '确定删除该素材？',
+    'Warning',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+    }
   )
-      .then(async () => {
-        const msg = ElMessage({
-          showClose: true,
-          duration: 0,
-          message: `删除中，请稍后...`
+    .then(async () => {
+      const msg = ElMessage({
+        showClose: true,
+        duration: 0,
+        message: `删除中，请稍后...`
+      })
+      try {
+        const deleteFileInfo = await axios.post('/api/delete', {
+          id: id
         })
-        try {
-          const deleteFileInfo = await axios.post('/api/delete', {
-            id: id
-          })
-          if (deleteFileInfo.status === 200 && deleteFileInfo.data.status === 'ok') {
-            const res = await axios.delete(`/api/material?file_id=${file_id}&id=${id}`)
+        if (deleteFileInfo.status === 200 && deleteFileInfo.data.status === 'ok') {
+          const res = await axios.delete(`/api/material?file_id=${file_id}&id=${id}`)
 
-            msg.close()
-            if (res.status === 200 && res.data.status === 'ok') {
-              ElMessage.success('删除成功')
-            } else {
-              ElMessage.error('删除失败')
-            }
-            const materials = await axios.get('/api/material', {
-              params: {
-                file_id: store.fileId
-              }
-            })
-            materialList.value = materials.data
+          msg.close()
+          if (res.status === 200 && res.data.status === 'ok') {
+            ElMessage.success('删除成功')
           } else {
-            msg.close()
             ElMessage.error('删除失败')
           }
-
-        } catch (e) {
-          console.log(e);
+          const materials = await axios.get('/api/material', {
+            params: {
+              file_id: store.fileId
+            }
+          })
+          materialList.value = materials.data
+        } else {
           msg.close()
           ElMessage.error('删除失败')
         }
+
+      } catch (e) {
+        console.log(e);
+        msg.close()
+        ElMessage.error('删除失败')
+      }
+    })
+    .catch(() => {
+      ElMessage({
+        type: 'info',
+        message: '取消删除！',
       })
-      .catch(() => {
-        ElMessage({
-          type: 'info',
-          message: '取消删除！',
-        })
-      })
+    })
 }
 
 
 const onMessageWasSent = async (message) => {
   if (!isResponding.value) {
     messageList.value = [...messageList.value, message]
-    messagesRequest.value.push({'role': 'user', 'content': message.data.text})
+    messagesRequest.value.push({ 'role': 'user', 'content': message.data.text })
   }
 }
 
@@ -332,6 +378,17 @@ watch(messageList, async (newList, oldValue) => {
   // console.log('前：', input[0].disabled)
   // input[0].disabled = true
   // console.log('后：', input[0].disabled)
+  const ids = pickedMaterialList.value.map(item => materialList.value[item].id).join(',')
+  const res = await axios.get('/api4ai/chroma', {
+    params: {
+      file_id: store.fileId,
+      material_id: ids,
+      text: messagesRequest.value[messagesRequest.value.length-1].content
+    }
+  })
+  console.log(res);
+  vecstorePrompt.value = res.data.content.documents.join('\n')
+  // messagesRequest.
   try {
     let response = await fetch('/api4ai/chat', {
       method: 'POST',
@@ -339,7 +396,8 @@ watch(messageList, async (newList, oldValue) => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        content: messagesRequest.value
+        content: messagesRequest.value,
+        prompt: "这是背景知识，你可以选择性的使用这些知识来回答用户的问题：\n" + vecstorePrompt.value
       })
     });
     if (!response.ok) {
@@ -351,7 +409,7 @@ watch(messageList, async (newList, oldValue) => {
     let output = ''
     let flag = false
     while (result) {
-      const {done, value} = await reader.read();
+      const { done, value } = await reader.read();
 
       if (done) {
         result = false;
@@ -375,7 +433,7 @@ watch(messageList, async (newList, oldValue) => {
     }
     if (!isChatOpen.value)
       newMessagesCount.value += 1
-    messagesRequest.value.push({'role': 'assistant', 'content': output})
+    messagesRequest.value.push({ 'role': 'assistant', 'content': output })
   } catch (e) {
     messageList.value.push({
       type: "text",
@@ -395,8 +453,8 @@ watch(messageList, async (newList, oldValue) => {
 const sentMessage = (text) => {
   if (text.length > 0) {
     newMessagesCount.value = isChatOpen.value
-        ? newMessagesCount.value
-        : newMessagesCount.value + 1;
+      ? newMessagesCount.value
+      : newMessagesCount.value + 1;
     onMessageWasSent({
       author: `me`,
       type: "text",
@@ -434,7 +492,7 @@ const editMessage = (message) => {
 <style>
 .chatdialog {
   width: 280px;
-  height: 82.4%;
+  height: 84.6%;
   position: fixed;
   right: 0;
   top: 90px;
@@ -442,6 +500,7 @@ const editMessage = (message) => {
   border-left: rgba(0, 0, 0, 0.08) solid 1px;
   transition: right 0.3s ease;
   overflow: scroll;
+  /* padding: 0; */
 }
 
 .hidden {
@@ -462,18 +521,24 @@ const editMessage = (message) => {
   color: #409eff;
 }
 
+.chatdialog::-webkit-scrollbar {
+  display: none;
+}
+
 .sc-launcher,
 .sc-open-icon,
 .sc-closed-icon {
   position: fixed;
   bottom: 60px !important;
+  left: 30px !important;
 }
 
 .sc-chat-window {
   top: 14.5% !important;
-  right: 0.5% !important;
-  width: 22.5% !important;
+  left: 0.5% !important;
+  width: 350px !important;
   height: 67.5% !important;
+  z-index: 999;
 }
 
 .sc-header {

@@ -27,7 +27,7 @@
       <el-divider></el-divider>
       <el-menu-item index="/deleted">
         <el-icon>
-          <House/>
+          <Delete/>
         </el-icon>
         <span>回收站</span>
       </el-menu-item>
@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-import {House, Search, Star} from "@element-plus/icons-vue";
+import {House, Search, Star, Delete} from "@element-plus/icons-vue";
 import {ref} from "vue";
 const input = ref('')
 </script>

@@ -6,6 +6,10 @@ export const store = reactive({
     fileId: 0,
     fileName: '',
     fileContent: null,
+    randomDegree: 0.95,
+    knowledgeBase: true,
+    customPrompt: false,
+    globalFileList: []
 })
 
 export const editorInstance = ref(null)

@@ -16,6 +16,7 @@ import {useRoute} from "vue-router";
 import {editorInstance, store} from "@/store/index.js";
 import axios from "axios";
 import {ElMessage} from "element-plus";
+import floatingToolbarPlugin from "@hufe921/canvas-editor-plugin-floating-toolbar";
 
 const route = useRoute()
 const wordFile = store.fileToConvert
@@ -44,7 +45,7 @@ onMounted(async () => {
       },
       {}
   )
-
+  editor.use(floatingToolbarPlugin)
   editorInstance.value = editor
 
   if (store.editType === 'docxFile') {
@@ -58,6 +59,7 @@ onMounted(async () => {
       content: fileContent.data,
       author: 'Asuka',
       file_size: store.fileToConvert.size,
+      star_type: 0
     })
 
     if (res.status === 201) {
@@ -1370,7 +1372,7 @@ onMounted(async () => {
   await handleContentChange()
 
   editor.listener.saved = async function (payload) {
-    // console.log(editor.command.getRange());
+    console.log(editor.command.getValue());
     // editor.command.executeAppendElementList([
     //   {
     //     value: 'abc'

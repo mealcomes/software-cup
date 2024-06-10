@@ -42,7 +42,8 @@ onMounted(async () => {
 
 const reqFileList = async () => {
   const res = await axios.get('/api/files')
-  res.data = res.data.filter(file => file.is_deleted === 0)
+  store.globalFileList = res.data
+  res.data = res.data.filter(file => file.is_deleted === 0 && file.is_template === 0)
   tableData.value = res.data.map(file => {
     if(file.file_size / 1024 >= 1024){
       file.file_size = (file.file_size / 1024 / 1024).toFixed(2) + "MB"
