@@ -33,7 +33,7 @@
               <template #label>
                 语音识别结果
               </template>
-              {{ previewedMaterial?.material_info.result }}
+              {{ previewedMaterial?.material_info }}
             </el-descriptions-item>
           </el-descriptions>
         </div>
