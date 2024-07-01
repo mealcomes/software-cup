@@ -30,6 +30,16 @@ const routes = [
         path: '/editor',
         name: 'Editor',
         component: Editor
+    },
+    {
+        path: '/mdeditor',
+        name: 'MdEditor',
+        component: () => import('../components/tiptap/MarkdownEditor.vue')
+    }, 
+    {
+        path: '/mdppt',
+        name: 'Mdppt',
+        component: () => import('../components/tiptap/RevealPPT.vue')
     }
 ]
 

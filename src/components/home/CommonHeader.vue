@@ -139,6 +139,31 @@ const newCommand = async (command) => {
     }
 
   }
+  else if (command === 'md') {
+    const res = await axios.post('/api/files', {
+      name: '未命名文件-' + Data.now().toString() + '.md',
+      content: '',
+      author: 'Asuka',
+      file_size: 0,
+      star_type: 0
+    })
+    console.log(res);
+    if (res.status === 201) {
+      ElMessage({
+        message: '新建成功',
+        type: 'success',
+      })
+      store.fileId = res.data.id
+      store.fileName = res.data.name
+      store.editType = 'newFile'
+      await router.push('/mdeditor')
+    } else {
+      ElMessage({
+        message: '新建失败',
+        type: 'error',
+      })
+    }
+  }
 }
 
 onMounted(() => {
